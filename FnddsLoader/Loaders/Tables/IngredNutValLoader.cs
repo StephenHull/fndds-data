@@ -53,68 +53,68 @@ public class IngredNutValLoader : DataLoader
                 SourceName = "[Ingredient code]",
                 DestinationName = "IngredientCode",
                 IsOrderedBy = true,
-                Versions = new HashSet<int> { 512 }
+                Versions = new HashSet<int> { 256, 512 }
             },
             new DataColumnModel
             {
                 SourceName = "[Nutrient code]",
                 DestinationName = "NutrientCode",
                 IsOrderedBy = true,
-                Versions = new HashSet<int> { 512 }
+                Versions = new HashSet<int> { 256, 512 }
             },
             new DataColumnModel
             {
                 SourceName = "[Start date]",
                 DestinationName = "StartDate",
-                Versions = new HashSet<int> { 512 }
+                Versions = new HashSet<int> { 256, 512 }
             },
             new DataColumnModel
             {
                 SourceName = "[End date]",
                 DestinationName = "EndDate",
-                Versions = new HashSet<int> { 512 }
+                Versions = new HashSet<int> { 256, 512 }
             },
             new DataColumnModel
             {
                 SourceName = "[Ingredient description]",
                 DestinationName = "IngredientDescription",
-                Versions = new HashSet<int> { 512 }
+                Versions = new HashSet<int> { 256, 512 }
             },
             new DataColumnModel
             {
                 SourceName = "[Nutrient value]",
                 DestinationName = "NutrientValue",
-                Versions = new HashSet<int> { 512 }
+                Versions = new HashSet<int> { 256, 512 }
             },
             new DataColumnModel
             {
                 SourceName = "[Nutrient value source]",
                 DestinationName = "NutrientValueSource",
-                Versions = new HashSet<int> { 512 }
+                Versions = new HashSet<int> { 256, 512 }
             },
             new DataColumnModel
             {
                 SourceName = "[FDC ID]",
                 DestinationName = "FdcId",
-                Versions = new HashSet<int> { 512 }
+                Versions = new HashSet<int> { 256, 512 }
             },
             new DataColumnModel
             {
                 SourceName = "[Derivation code]",
                 DestinationName = "DerivationCode",
-                Versions = new HashSet<int> { 512 }
+                Versions = new HashSet<int> { 256, 512 }
             },
             new DataColumnModel
             {
                 SourceName = "[SR AddMod year]",
                 DestinationName = "SrAddModYear",
-                Versions = new HashSet<int> { 512 }
+                Versions = new HashSet<int> { 256, 512 }
             },
             new DataColumnModel
             {
                 SourceName = "[Foundation year acquired]",
                 DestinationName = "FoundationYearAcquired",
-                Versions = new HashSet<int> { 512 }
+                Versions = new HashSet<int> { 256, 512 }
             },
         };
 

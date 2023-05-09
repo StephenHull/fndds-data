@@ -53,32 +53,32 @@ public class FnddsNutValLoader : DataLoader
                 SourceName = "[Food code]",
                 DestinationName = "FoodCode",
                 IsOrderedBy = true,
-                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 512 }
+                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 256, 512 }
             },
             new DataColumnModel
             {
                 SourceName = "[Nutrient code]",
                 DestinationName = "NutrientCode",
                 IsOrderedBy = true,
-                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 512 }
+                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 256, 512 }
             },
             new DataColumnModel
             {
                 SourceName = "[Start date]",
                 DestinationName = "StartDate",
-                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 512 }
+                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 256, 512 }
             },
             new DataColumnModel
             {
                 SourceName = "[End date]",
                 DestinationName = "EndDate",
-                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 512 }
+                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 256, 512 }
             },
             new DataColumnModel
             {
                 SourceName = "[Nutrient value]",
                 DestinationName = "NutrientValue",
-                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 512 }
+                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 256, 512 }
             },
         };
 

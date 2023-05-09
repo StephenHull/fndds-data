@@ -54,25 +54,25 @@ public class SubcodeDescLoader : DataLoader
                 SourceName = "[Subcode]",
                 DestinationName = "Subcode",
                 IsOrderedBy = true,
-                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64 }
+                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 256 }
             },
             new DataColumnModel
             {
                 SourceName = "[Start date]",
                 DestinationName = "StartDate",
-                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64 }
+                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 256 }
             },
             new DataColumnModel
             {
                 SourceName = "[End date]",
                 DestinationName = "EndDate",
-                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64 }
+                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 256 }
             },
             new DataColumnModel
             {
                 SourceName = "[Subcode description]",
                 DestinationName = "SubcodeDescription",
-                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64 }
+                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 256 }
             }
         };
 

@@ -49,25 +49,25 @@ public class MoistNFatAdjustLoader : DataLoader
                 SourceName = "[Food code]",
                 DestinationName = "FoodCode",
                 IsOrderedBy = true,
-                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 512 }
+                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 256, 512 }
             },
             new DataColumnModel
             {
                 SourceName = "[Start date]",
                 DestinationName = "StartDate",
-                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 512 }
+                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 256, 512 }
             },
             new DataColumnModel
             {
                 SourceName = "[End date]",
                 DestinationName = "EndDate",
-                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 512 }
+                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 256, 512 }
             },
             new DataColumnModel
             {
                 SourceName = "[Moisture change]",
                 DestinationName = "MoistureChange",
-                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 512 }
+                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 256, 512 }
             },
             new DataColumnModel
             {
@@ -91,7 +91,7 @@ public class MoistNFatAdjustLoader : DataLoader
             return FnddsVersion.Id switch
             {
                 1 or 2 or 4 or 8 or 16 or 32 or 64 => "MoistNFatAdjust",
-                512 => "MoistAdjust",
+                256 or 512 => "MoistAdjust",
                 _ => string.Empty,
             };
         }

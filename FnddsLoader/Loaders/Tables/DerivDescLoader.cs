@@ -52,13 +52,13 @@ public class DerivDescLoader : DataLoader
                 SourceName = "[Derivation code]",
                 DestinationName = "DerivationCode",
                 IsOrderedBy = true,
-                Versions = new HashSet<int> { 512 }
+                Versions = new HashSet<int> { 256, 512 }
             },
             new DataColumnModel
             {
                 SourceName = "[Derivation description]",
                 DestinationName = "DerivationDescription",
-                Versions = new HashSet<int> { 512 }
+                Versions = new HashSet<int> { 256, 512 }
             },
         };
 
