@@ -52,26 +52,26 @@ public class FnddsIngredLoader : DataLoader
                 SourceName = "[Food code]",
                 DestinationName = "FoodCode",
                 IsOrderedBy = true,
-                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 256, 512 }
+                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 }
             },
             new DataColumnModel
             {
                 SourceName = "[Seq num]",
                 DestinationName = "SeqNum",
                 IsOrderedBy = true,
-                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 256, 512 }
+                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 }
             },
             new DataColumnModel
             {
                 SourceName = "[Start date]",
                 DestinationName = "StartDate",
-                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 256, 512 }
+                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 }
             },
             new DataColumnModel
             {
                 SourceName = "[End date]",
                 DestinationName = "EndDate",
-                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 256, 512 }
+                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 }
             },
             new DataColumnModel
             {
@@ -83,7 +83,7 @@ public class FnddsIngredLoader : DataLoader
             {
                 SourceName = "[Ingredient code]",
                 DestinationName = "IngredientCode",
-                Versions = new HashSet<int> { 256, 512 }
+                Versions = new HashSet<int> { 128, 256, 512 }
             },
             new DataColumnModel
             {
@@ -95,31 +95,31 @@ public class FnddsIngredLoader : DataLoader
             {
                 SourceName = "[Ingredient description]",
                 DestinationName = "IngredientDescription",
-                Versions = new HashSet<int> { 256, 512 }
+                Versions = new HashSet<int> { 128, 256, 512 }
             },
             new DataColumnModel
             {
                 SourceName = "Amount",
                 DestinationName = "Amount",
-                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 256, 512 }
+                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 }
             },
             new DataColumnModel
             {
                 SourceName = "Measure",
                 DestinationName = "Measure",
-                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 256, 512 }
+                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 }
             },
             new DataColumnModel
             {
                 SourceName = "[Portion code]",
                 DestinationName = "PortionCode",
-                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 256, 512 }
+                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 }
             },
             new DataColumnModel
             {
                 SourceName = "[Retention code]",
                 DestinationName = "RetentionCode",
-                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 256, 512 }
+                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 }
             },
             new DataColumnModel
             {
@@ -137,7 +137,7 @@ public class FnddsIngredLoader : DataLoader
             {
                 SourceName = "[Ingredient weight]",
                 DestinationName = "IngredientWeight",
-                Versions = new HashSet<int> { 256, 512 }
+                Versions = new HashSet<int> { 128, 256, 512 }
             },
             new DataColumnModel
             {

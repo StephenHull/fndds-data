@@ -143,6 +143,10 @@ public partial class FnddsContext : DbContext
             .IsUnicode(false);
 
         modelBuilder.Entity<MainFoodDesc>()
+            .Property(e => e.FortificationIdentifier)
+            .IsUnicode(false);
+
+        modelBuilder.Entity<MainFoodDesc>()
             .Property(e => e.CategoryDescription)
             .IsUnicode(false);
 

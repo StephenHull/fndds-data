@@ -37,7 +37,7 @@ public partial class MainFoodDesc
     [StringLength(60)]
     public string AbbreviatedMainFoodDescription { get; set; }
 
-    public int? FortificationIdentifier { get; set; }
+    public string FortificationIdentifier { get; set; }
 
     public int? CategoryNumber { get; set; }
 

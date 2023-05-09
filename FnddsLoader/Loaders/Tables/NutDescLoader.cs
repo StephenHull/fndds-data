@@ -53,31 +53,31 @@ public class NutDescLoader : DataLoader
                 SourceName = "[Nutrient code]",
                 DestinationName = "NutrientCode",
                 IsOrderedBy = true,
-                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 256, 512 }
+                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 }
             },
             new DataColumnModel
             {
                 SourceName = "[Nutrient description]",
                 DestinationName = "NutrientDescription",
-                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 256, 512 }
+                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 }
             },
             new DataColumnModel
             {
                 SourceName = "Tagname",
                 DestinationName = "Tagname",
-                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 256, 512 }
+                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 }
             },
             new DataColumnModel
             {
                 SourceName = "Unit",
                 DestinationName = "Unit",
-                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 256, 512 }
+                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 }
             },
             new DataColumnModel
             {
                 SourceName = "Decimals",
                 DestinationName = "Decimals",
-                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 256, 512 }
+                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 }
             },
         };
 

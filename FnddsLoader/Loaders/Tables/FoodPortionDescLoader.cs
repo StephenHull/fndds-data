@@ -53,25 +53,25 @@ public class FoodPortionDescLoader : DataLoader
                 SourceName = "[Portion code]",
                 DestinationName = "PortionCode",
                 IsOrderedBy = true,
-                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 256, 512 }
+                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 }
             },
             new DataColumnModel
             {
                 SourceName = "[Start date]",
                 DestinationName = "StartDate",
-                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 256, 512 }
+                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 }
             },
             new DataColumnModel
             {
                 SourceName = "[End date]",
                 DestinationName = "EndDate",
-                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 256, 512 }
+                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 }
             },
             new DataColumnModel
             {
                 SourceName = "[Portion description]",
                 DestinationName = "PortionDescription",
-                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 256, 512 }
+                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 }
             },
             new DataColumnModel
             {

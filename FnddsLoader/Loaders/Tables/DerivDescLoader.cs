@@ -49,10 +49,23 @@ public class DerivDescLoader : DataLoader
         {
             new DataColumnModel
             {
+                SourceName = "[SR 28 derivation code]",
+                DestinationName = "DerivationCode",
+                IsOrderedBy = true,
+                Versions = new HashSet<int> { 128 }
+            },
+            new DataColumnModel
+            {
                 SourceName = "[Derivation code]",
                 DestinationName = "DerivationCode",
                 IsOrderedBy = true,
                 Versions = new HashSet<int> { 256, 512 }
+            },
+            new DataColumnModel
+            {
+                SourceName = "[SR 28 derivation description]",
+                DestinationName = "DerivationDescription",
+                Versions = new HashSet<int> { 128 }
             },
             new DataColumnModel
             {

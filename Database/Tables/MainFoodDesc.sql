@@ -6,7 +6,7 @@
 	EndDate DATETIME NOT NULL,
 	MainFoodDescription VARCHAR(200) NOT NULL,
 	AbbreviatedMainFoodDescription VARCHAR(60) NULL,
-	FortificationIdentifier INT  NULL,
+	FortificationIdentifier VARCHAR(2)  NULL,
 	CategoryNumber INT NULL,
 	CategoryDescription VARCHAR(80) NULL,
 	Created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
