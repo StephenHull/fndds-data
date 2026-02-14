@@ -13,11 +13,6 @@ namespace FnddsData.FnddsLoader.Loaders.Tables;
 public class FnddsIngredLoader : DataLoader
 {
     /// <summary>
-    /// The table name in the source database.
-    /// </summary>
-    private const string SourceTableName = "FnddsIngred";
-
-    /// <summary>
     /// The logger class.
     /// </summary>
     private static readonly ILogger<FnddsIngredLoader> _logger =
@@ -60,13 +55,13 @@ public class FnddsIngredLoader : DataLoader
             new DataColumnModel
             {
                 SourceName = "[Start date]",
-                DestinationName = "StartDT",
+                DestinationName = "StartDt",
                 Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256]
             },
             new DataColumnModel
             {
                 SourceName = "[End date]",
-                DestinationName = "EndDT",
+                DestinationName = "EndDt",
                 Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256]
             },
             new DataColumnModel
@@ -156,51 +151,73 @@ public class FnddsIngredLoader : DataLoader
         ];
 
     /// <inheritdoc />
-    public override string TableName => SourceTableName;
+    public override string TableName
+    {
+        get
+        {
+            return FnddsVersion.Id switch
+            {
+                1 or 2 or 4 or 8 or 16 or 32 or 64 => "FNDDSSRLinks",
+                128 or 256 or 512 or 1024 => "FnddsIngred",
+                _ => string.Empty,
+            };
+        }
+    }
+
 
     /// <inheritdoc />
     public override async Task<int> CreateRecordsAsync(IEnumerable<DataColumnModel> columns, OleDbDataReader reader)
     {
-        var srLinks = new List<FnddsIngred>();
-
-        var recordCount = 0;
-        while (reader.Read())
+        try
         {
-            var srLink = new FnddsIngred
+            var entities = new List<FnddsIngred>();
+
+            var recordCount = 0;
+
+            while (reader.Read())
             {
-                VersionId = FnddsVersion.Id,
-                CreateDt = DateTime.UtcNow
-            };
+                var entity = new FnddsIngred
+                {
+                    VersionId = FnddsVersion.Id,
+                    CreateDt = DateTime.UtcNow
+                };
 
-            SetModelValues(columns, reader, srLink);
+                SetModelValues(columns, reader, entity);
 
-            srLinks.Add(srLink);
+                entities.Add(entity);
 
-            if (_isDebugEnabled)
-            {
-                _logger.LogDebug("Table: {tableName}, Food code: {foodCode}, Sequence: {sequence}", SourceTableName,
-                    srLink.FoodCode, srLink.SeqNum);
+                if (_isDebugEnabled)
+                {
+                    _logger.LogDebug("Table: {tableName}, Food code: {foodCode}, Sequence: {sequence}", TableName,
+                        entity.FoodCode, entity.SeqNum);
+                }
+
+                if (entities.Count > BatchSize)
+                {
+                    Context.FnddsIngreds.AddRange(entities);
+
+                    await Context.SaveChangesAsync();
+
+                    entities.Clear();
+                }
+
+                recordCount++;
             }
 
-            if (srLinks.Count > BatchSize)
+            if (entities.Count > 0)
             {
-                Context.FnddsIngreds.AddRange(srLinks);
+                Context.FnddsIngreds.AddRange(entities);
 
                 await Context.SaveChangesAsync();
-
-                srLinks.Clear();
             }
 
-            recordCount++;
+            return recordCount;
         }
-
-        if (srLinks.Count > 0)
+        catch (Exception e)
         {
-            Context.FnddsIngreds.AddRange(srLinks);
+            _logger.LogError(e, "Failed to create the records for table {tableName}.", TableName);
 
-            await Context.SaveChangesAsync();
+            throw;
         }
-
-        return recordCount;
     }
 }

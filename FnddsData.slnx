@@ -1,4 +1,10 @@
 <Solution>
+  <Folder Name="/FnddsData/">
+    <File Path=".editorconfig" />
+    <File Path=".gitignore" />
+    <File Path="LICENSE" />
+    <File Path="README.md" />
+  </Folder>
   <Project Path="Database/Database.sqlproj" Id="cbcd95e2-cbc6-4c22-9aca-3c86e1737635">
     <Build />
     <Deploy />

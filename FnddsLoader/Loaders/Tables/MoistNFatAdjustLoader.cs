@@ -49,13 +49,13 @@ public class MoistNFatAdjustLoader : DataLoader
             new DataColumnModel
             {
                 SourceName = "[Start date]",
-                DestinationName = "StartDT",
+                DestinationName = "StartDt",
                 Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256]
             },
             new DataColumnModel
             {
                 SourceName = "[End date]",
-                DestinationName = "EndDT",
+                DestinationName = "EndDt",
                 Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256]
             },
             new DataColumnModel
@@ -95,45 +95,55 @@ public class MoistNFatAdjustLoader : DataLoader
     /// <inheritdoc />
     public override async Task<int> CreateRecordsAsync(IEnumerable<DataColumnModel> columns, OleDbDataReader reader)
     {
-        var adjusts = new List<MoistNFatAdjust>();
-
-        var recordCount = 0;
-        while (reader.Read())
+        try
         {
-            var adjust = new MoistNFatAdjust
+            var entities = new List<MoistNFatAdjust>();
+
+            var recordCount = 0;
+
+            while (reader.Read())
             {
-                VersionId = FnddsVersion.Id,
-                CreateDt = DateTime.UtcNow
-            };
+                var entity = new MoistNFatAdjust
+                {
+                    VersionId = FnddsVersion.Id,
+                    CreateDt = DateTime.UtcNow
+                };
 
-            SetModelValues(columns, reader, adjust);
+                SetModelValues(columns, reader, entity);
 
-            adjusts.Add(adjust);
+                entities.Add(entity);
 
-            if (_isDebugEnabled)
-            {
-                _logger.LogDebug("Table: {tableName}, Food code: {foodCode}", TableName, adjust.FoodCode);
+                if (_isDebugEnabled)
+                {
+                    _logger.LogDebug("Table: {tableName}, Food code: {foodCode}", TableName, entity.FoodCode);
+                }
+
+                if (entities.Count > BatchSize)
+                {
+                    Context.MoistNFatAdjusts.AddRange(entities);
+
+                    await Context.SaveChangesAsync();
+
+                    entities.Clear();
+                }
+
+                recordCount++;
             }
 
-            if (adjusts.Count > BatchSize)
+            if (entities.Count > 0)
             {
-                Context.MoistNFatAdjusts.AddRange(adjusts);
+                Context.MoistNFatAdjusts.AddRange(entities);
 
                 await Context.SaveChangesAsync();
-
-                adjusts.Clear();
             }
 
-            recordCount++;
+            return recordCount;
         }
-
-        if (adjusts.Count > 0)
+        catch (Exception e)
         {
-            Context.MoistNFatAdjusts.AddRange(adjusts);
+            _logger.LogError(e, "Failed to create the records for table {tableName}.", TableName);
 
-            await Context.SaveChangesAsync();
+            throw;
         }
-
-        return recordCount;
     }
 }

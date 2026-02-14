@@ -54,19 +54,19 @@ public class SubcodeDescLoader : DataLoader
             new DataColumnModel
             {
                 SourceName = "[Start date]",
-                DestinationName = "StartDT",
+                DestinationName = "StartDt",
                 Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256]
             },
             new DataColumnModel
             {
                 SourceName = "[End date]",
-                DestinationName = "EndDT",
+                DestinationName = "EndDt",
                 Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256]
             },
             new DataColumnModel
             {
                 SourceName = "[Subcode description]",
-                DestinationName = "SubcodeDesc",
+                DestinationName = "SubcodeDescription",
                 Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256]
             },
         ];
@@ -77,45 +77,55 @@ public class SubcodeDescLoader : DataLoader
     /// <inheritdoc />
     public override async Task<int> CreateRecordsAsync(IEnumerable<DataColumnModel> columns, OleDbDataReader reader)
     {
-        var subcodes = new List<SubcodeDesc>();
-
-        var recordCount = 0;
-        while (reader.Read())
+        try
         {
-            var subcode = new SubcodeDesc
+            var entities = new List<SubcodeDesc>();
+
+            var recordCount = 0;
+
+            while (reader.Read())
             {
-                VersionId = FnddsVersion.Id,
-                CreateDt = DateTime.UtcNow
-            };
+                var entity = new SubcodeDesc
+                {
+                    VersionId = FnddsVersion.Id,
+                    CreateDt = DateTime.UtcNow
+                };
 
-            SetModelValues(columns, reader, subcode);
+                SetModelValues(columns, reader, entity);
 
-            subcodes.Add(subcode);
+                entities.Add(entity);
 
-            if (_isDebugEnabled)
-            {
-                _logger.LogDebug("Table: {tableName}, Subcode: {subcode}", SourceTableName, subcode.Subcode);
+                if (_isDebugEnabled)
+                {
+                    _logger.LogDebug("Table: {tableName}, Subcode: {subcode}", SourceTableName, entity.Subcode);
+                }
+
+                if (entities.Count > BatchSize)
+                {
+                    Context.SubcodeDescs.AddRange(entities);
+
+                    await Context.SaveChangesAsync();
+
+                    entities.Clear();
+                }
+
+                recordCount++;
             }
 
-            if (subcodes.Count > BatchSize)
+            if (entities.Count > 0)
             {
-                Context.SubcodeDescs.AddRange(subcodes);
+                Context.SubcodeDescs.AddRange(entities);
 
                 await Context.SaveChangesAsync();
-
-                subcodes.Clear();
             }
 
-            recordCount++;
+            return recordCount;
         }
-
-        if (subcodes.Count > 0)
+        catch (Exception e)
         {
-            Context.SubcodeDescs.AddRange(subcodes);
+            _logger.LogError(e, "Failed to create the records for table {tableName}.", TableName);
 
-            await Context.SaveChangesAsync();
+            throw;
         }
-
-        return recordCount;
     }
 }

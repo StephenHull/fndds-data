@@ -74,13 +74,13 @@ public class FoodWeightLoader : DataLoader
             new DataColumnModel
             {
                 SourceName = "[Start date]",
-                DestinationName = "StartDT",
+                DestinationName = "StartDt",
                 Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256]
             },
             new DataColumnModel
             {
                 SourceName = "[End date]",
-                DestinationName = "EndDT",
+                DestinationName = "EndDt",
                 Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256]
             },
             new DataColumnModel
@@ -103,47 +103,57 @@ public class FoodWeightLoader : DataLoader
     /// <inheritdoc />
     public override async Task<int> CreateRecordsAsync(IEnumerable<DataColumnModel> columns, OleDbDataReader reader)
     {
-        var weights = new List<FoodWeight>();
-
-        var recordCount = 0;
-        while (reader.Read())
+        try
         {
-            var weight = new FoodWeight
+            var entities = new List<FoodWeight>();
+
+            var recordCount = 0;
+
+            while (reader.Read())
             {
-                VersionId = FnddsVersion.Id,
-                CreateDt = DateTime.UtcNow
-            };
+                var entity = new FoodWeight
+                {
+                    VersionId = FnddsVersion.Id,
+                    CreateDt = DateTime.UtcNow
+                };
 
-            SetModelValues(columns, reader, weight);
+                SetModelValues(columns, reader, entity);
 
-            weights.Add(weight);
+                entities.Add(entity);
 
-            if (_isDebugEnabled)
-            {
-                _logger.LogDebug("Table: {tableName}, Food code: {foodCode}, Subcode: {subcode}, " +
-                    "Sequence: {sequence}, Portion code: {portionCode}", SourceTableName, weight.FoodCode,
-                    weight.Subcode, weight.SeqNum, weight.PortionCode);
+                if (_isDebugEnabled)
+                {
+                    _logger.LogDebug("Table: {tableName}, Food code: {foodCode}, Subcode: {subcode}, Sequence: " +
+                        "{sequence}, Portion code: {portionCode}", SourceTableName, entity.FoodCode, entity.Subcode,
+                        entity.SeqNum, entity.PortionCode);
+                }
+
+                if (entities.Count > BatchSize)
+                {
+                    Context.FoodWeights.AddRange(entities);
+
+                    await Context.SaveChangesAsync();
+
+                    entities.Clear();
+                }
+
+                recordCount++;
             }
 
-            if (weights.Count > BatchSize)
+            if (entities.Count > 0)
             {
-                Context.FoodWeights.AddRange(weights);
+                Context.FoodWeights.AddRange(entities);
 
                 await Context.SaveChangesAsync();
-
-                weights.Clear();
             }
 
-            recordCount++;
+            return recordCount;
         }
-
-        if (weights.Count > 0)
+        catch (Exception e)
         {
-            Context.FoodWeights.AddRange(weights);
+            _logger.LogError(e, "Failed to create the records for table {tableName}.", TableName);
 
-            await Context.SaveChangesAsync();
+            throw;
         }
-
-        return recordCount;
     }
 }

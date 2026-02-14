@@ -54,13 +54,13 @@ public class MainFoodDescLoader : DataLoader
             new DataColumnModel
             {
                 SourceName = "[Start date]",
-                DestinationName = "StartDT",
+                DestinationName = "StartDt",
                 Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256]
             },
             new DataColumnModel
             {
                 SourceName = "[End date]",
-                DestinationName = "EndDT",
+                DestinationName = "EndDt",
                 Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256]
             },
             new DataColumnModel
@@ -113,45 +113,55 @@ public class MainFoodDescLoader : DataLoader
     /// <inheritdoc />
     public override async Task<int> CreateRecordsAsync(IEnumerable<DataColumnModel> columns, OleDbDataReader reader)
     {
-        var foods = new List<MainFoodDesc>();
-
-        var recordCount = 0;
-        while (reader.Read())
+        try
         {
-            var food = new MainFoodDesc
+            var entities = new List<MainFoodDesc>();
+
+            var recordCount = 0;
+
+            while (reader.Read())
             {
-                VersionId = FnddsVersion.Id,
-                CreateDt = DateTime.UtcNow
-            };
+                var entity = new MainFoodDesc
+                {
+                    VersionId = FnddsVersion.Id,
+                    CreateDt = DateTime.UtcNow
+                };
 
-            SetModelValues(columns, reader, food);
+                SetModelValues(columns, reader, entity);
 
-            foods.Add(food);
+                entities.Add(entity);
 
-            if (_isDebugEnabled)
-            {
-                _logger.LogDebug("Table: {tableName}, Food code: {foodCode}", SourceTableName, food.FoodCode);
+                if (_isDebugEnabled)
+                {
+                    _logger.LogDebug("Table: {tableName}, Food code: {foodCode}", SourceTableName, entity.FoodCode);
+                }
+
+                if (entities.Count > BatchSize)
+                {
+                    Context.MainFoodDescs.AddRange(entities);
+
+                    await Context.SaveChangesAsync();
+
+                    entities.Clear();
+                }
+
+                recordCount++;
             }
 
-            if (foods.Count > BatchSize)
+            if (entities.Count > 0)
             {
-                Context.MainFoodDescs.AddRange(foods);
+                Context.MainFoodDescs.AddRange(entities);
 
                 await Context.SaveChangesAsync();
-
-                foods.Clear();
             }
 
-            recordCount++;
+            return recordCount;
         }
-
-        if (foods.Count > 0)
+        catch (Exception e)
         {
-            Context.MainFoodDescs.AddRange(foods);
+            _logger.LogError(e, "Failed to create the records for table {tableName}.", TableName);
 
-            await Context.SaveChangesAsync();
+            throw;
         }
-
-        return recordCount;
     }
 }

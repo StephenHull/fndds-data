@@ -82,43 +82,53 @@ public class NutDescLoader : DataLoader
     /// <inheritdoc />
     public override async Task<int> CreateRecordsAsync(IEnumerable<DataColumnModel> columns, OleDbDataReader reader)
     {
-        var nutrients = new List<NutDesc>();
-
-        var recordCount = 0;
-        while (reader.Read())
+        try
         {
-            var nutrient = new NutDesc
+            var entities = new List<NutDesc>();
+
+            var recordCount = 0;
+
+            while (reader.Read())
             {
-                VersionId = FnddsVersion.Id,
-                CreateDt = DateTime.UtcNow
-            };
+                var entity = new NutDesc
+                {
+                    VersionId = FnddsVersion.Id,
+                    CreateDt = DateTime.UtcNow
+                };
 
-            SetModelValues(columns, reader, nutrient);
+                SetModelValues(columns, reader, entity);
 
-            nutrients.Add(nutrient);
+                entities.Add(entity);
 
-            if (_isDebugEnabled)
-            {
-                _logger.LogDebug("Table: {tableName}, Nutrient code: {nutrientCode}", SourceTableName,
-                    nutrient.NutrientCode);
+                if (_isDebugEnabled)
+                {
+                    _logger.LogDebug("Table: {tableName}, Nutrient code: {nutrientCode}", SourceTableName,
+                        entity.NutrientCode);
+                }
+
+                if (entities.Count > BatchSize)
+                {
+                    Context.NutDescs.AddRange(entities);
+
+                    await Context.SaveChangesAsync();
+
+                    entities.Clear();
+                }
+
+                recordCount++;
             }
 
-            if (nutrients.Count > BatchSize)
-            {
-                Context.NutDescs.AddRange(nutrients);
+            Context.NutDescs.AddRange(entities);
 
-                await Context.SaveChangesAsync();
+            await Context.SaveChangesAsync();
 
-                nutrients.Clear();
-            }
-
-            recordCount++;
+            return recordCount;
         }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Failed to create the records for table {tableName}.", TableName);
 
-        Context.NutDescs.AddRange(nutrients);
-
-        await Context.SaveChangesAsync();
-
-        return recordCount;
+            throw;
+        }
     }
 }

@@ -61,13 +61,13 @@ public class AddFoodDescLoader : DataLoader
             new DataColumnModel
             {
                 SourceName = "[Start date]",
-                DestinationName = "StartDT",
+                DestinationName = "StartDt",
                 Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256]
             },
             new DataColumnModel
             {
                 SourceName = "[End date]",
-                DestinationName = "EndDT",
+                DestinationName = "EndDt",
                 Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256]
             },
             new DataColumnModel
@@ -84,46 +84,56 @@ public class AddFoodDescLoader : DataLoader
     /// <inheritdoc />
     public override async Task<int> CreateRecordsAsync(IEnumerable<DataColumnModel> columns, OleDbDataReader reader)
     {
-        var descriptions = new List<AddFoodDesc>();
-
-        var recordCount = 0;
-        while (reader.Read())
+        try
         {
-            var description = new AddFoodDesc
+            var entities = new List<AddFoodDesc>();
+
+            var recordCount = 0;
+
+            while (reader.Read())
             {
-                VersionId = FnddsVersion.Id,
-                CreateDt = DateTime.UtcNow
-            };
+                var entity = new AddFoodDesc
+                {
+                    VersionId = FnddsVersion.Id,
+                    CreateDt = DateTime.UtcNow
+                };
 
-            SetModelValues(columns, reader, description);
+                SetModelValues(columns, reader, entity);
 
-            descriptions.Add(description);
+                entities.Add(entity);
 
-            if (_isDebugEnabled)
-            {
-                _logger.LogDebug("Table: {tableName}, Food code: {foodCode}, Sequence: {sequenceNumber}",
-                    SourceTableName, description.FoodCode, description.SeqNum);
+                if (_isDebugEnabled)
+                {
+                    _logger.LogDebug("Table: {tableName}, Food code: {foodCode}, Sequence: {sequenceNumber}",
+                        SourceTableName, entity.FoodCode, entity.SeqNum);
+                }
+
+                if (entities.Count > BatchSize)
+                {
+                    Context.AddFoodDescs.AddRange(entities);
+
+                    await Context.SaveChangesAsync();
+
+                    entities.Clear();
+                }
+
+                recordCount++;
             }
 
-            if (descriptions.Count > BatchSize)
+            if (entities.Count > 0)
             {
-                Context.AddFoodDescs.AddRange(descriptions);
+                Context.AddFoodDescs.AddRange(entities);
 
                 await Context.SaveChangesAsync();
-
-                descriptions.Clear();
             }
 
-            recordCount++;
+            return recordCount;
         }
-
-        if (descriptions.Count > 0)
+        catch (Exception e)
         {
-            Context.AddFoodDescs.AddRange(descriptions);
+            _logger.LogError(e, "Failed to create the records for table {tableName}.", TableName);
 
-            await Context.SaveChangesAsync();
+            throw;
         }
-
-        return recordCount;
     }
 }

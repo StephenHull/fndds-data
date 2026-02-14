@@ -77,43 +77,53 @@ public class DerivDescLoader : DataLoader
     /// <inheritdoc />
     public override async Task<int> CreateRecordsAsync(IEnumerable<DataColumnModel> columns, OleDbDataReader reader)
     {
-        var derivations = new List<DerivDesc>();
-
-        var recordCount = 0;
-        while (reader.Read())
+        try
         {
-            var derivation = new DerivDesc
+            var entities = new List<DerivDesc>();
+
+            var recordCount = 0;
+
+            while (reader.Read())
             {
-                VersionId = FnddsVersion.Id,
-                CreateDt = DateTime.UtcNow
-            };
+                var entity = new DerivDesc
+                {
+                    VersionId = FnddsVersion.Id,
+                    CreateDt = DateTime.UtcNow
+                };
 
-            SetModelValues(columns, reader, derivation);
+                SetModelValues(columns, reader, entity);
 
-            derivations.Add(derivation);
+                entities.Add(entity);
 
-            if (_isDebugEnabled)
-            {
-                _logger.LogDebug("Table: {tableName}, Derivation code: {derivationCode}", SourceTableName,
-                    derivation.DerivationCode);
+                if (_isDebugEnabled)
+                {
+                    _logger.LogDebug("Table: {tableName}, Derivation code: {derivationCode}", SourceTableName,
+                        entity.DerivationCode);
+                }
+
+                if (entities.Count > BatchSize)
+                {
+                    Context.DerivDescs.AddRange(entities);
+
+                    await Context.SaveChangesAsync();
+
+                    entities.Clear();
+                }
+
+                recordCount++;
             }
 
-            if (derivations.Count > BatchSize)
-            {
-                Context.DerivDescs.AddRange(derivations);
+            Context.DerivDescs.AddRange(entities);
 
-                await Context.SaveChangesAsync();
+            await Context.SaveChangesAsync();
 
-                derivations.Clear();
-            }
-
-            recordCount++;
+            return recordCount;
         }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Failed to create the records for table {tableName}.", TableName);
 
-        Context.DerivDescs.AddRange(derivations);
-
-        await Context.SaveChangesAsync();
-
-        return recordCount;
+            throw;
+        }
     }
 }

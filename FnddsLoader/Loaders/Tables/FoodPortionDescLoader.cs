@@ -54,13 +54,13 @@ public class FoodPortionDescLoader : DataLoader
             new DataColumnModel
             {
                 SourceName = "[Start date]",
-                DestinationName = "StartDT",
+                DestinationName = "StartDt",
                 Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256]
             },
             new DataColumnModel
             {
                 SourceName = "[End date]",
-                DestinationName = "EndDT",
+                DestinationName = "EndDt",
                 Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256]
             },
             new DataColumnModel
@@ -83,46 +83,56 @@ public class FoodPortionDescLoader : DataLoader
     /// <inheritdoc />
     public override async Task<int> CreateRecordsAsync(IEnumerable<DataColumnModel> columns, OleDbDataReader reader)
     {
-        var portions = new List<FoodPortionDesc>();
-
-        var recordCount = 0;
-        while (reader.Read())
+        try
         {
-            var portion = new FoodPortionDesc
+            var entities = new List<FoodPortionDesc>();
+
+            var recordCount = 0;
+
+            while (reader.Read())
             {
-                VersionId = FnddsVersion.Id,
-                CreateDt = DateTime.UtcNow
-            };
+                var entity = new FoodPortionDesc
+                {
+                    VersionId = FnddsVersion.Id,
+                    CreateDt = DateTime.UtcNow
+                };
 
-            SetModelValues(columns, reader, portion);
+                SetModelValues(columns, reader, entity);
 
-            portions.Add(portion);
+                entities.Add(entity);
 
-            if (_isDebugEnabled)
-            {
-                _logger.LogDebug("Table: {tableName}, Portion code: {portionCode}", SourceTableName,
-                    portion.PortionCode);
+                if (_isDebugEnabled)
+                {
+                    _logger.LogDebug("Table: {tableName}, Portion code: {portionCode}", SourceTableName,
+                        entity.PortionCode);
+                }
+
+                if (entities.Count > BatchSize)
+                {
+                    Context.FoodPortionDescs.AddRange(entities);
+
+                    await Context.SaveChangesAsync();
+
+                    entities.Clear();
+                }
+
+                recordCount++;
             }
 
-            if (portions.Count > BatchSize)
+            if (entities.Count > 0)
             {
-                Context.FoodPortionDescs.AddRange(portions);
+                Context.FoodPortionDescs.AddRange(entities);
 
                 await Context.SaveChangesAsync();
-
-                portions.Clear();
             }
 
-            recordCount++;
+            return recordCount;
         }
-
-        if (portions.Count > 0)
+        catch (Exception e)
         {
-            Context.FoodPortionDescs.AddRange(portions);
+            _logger.LogError(e, "Failed to create the records for table {tableName}.", TableName);
 
-            await Context.SaveChangesAsync();
+            throw;
         }
-
-        return recordCount;
     }
 }

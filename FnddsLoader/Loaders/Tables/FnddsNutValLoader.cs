@@ -61,13 +61,13 @@ public class FnddsNutValLoader : DataLoader
             new DataColumnModel
             {
                 SourceName = "[Start date]",
-                DestinationName = "StartDT",
+                DestinationName = "StartDt",
                 Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256]
             },
             new DataColumnModel
             {
                 SourceName = "[End date]",
-                DestinationName = "EndDT",
+                DestinationName = "EndDt",
                 Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256]
             },
             new DataColumnModel
@@ -84,46 +84,56 @@ public class FnddsNutValLoader : DataLoader
     /// <inheritdoc />
     public override async Task<int> CreateRecordsAsync(IEnumerable<DataColumnModel> columns, OleDbDataReader reader)
     {
-        var nutrients = new List<FnddsNutVal>();
-
-        var recordCount = 0;
-        while (reader.Read())
+        try
         {
-            var nutrient = new FnddsNutVal
+            var entities = new List<FnddsNutVal>();
+
+            var recordCount = 0;
+
+            while (reader.Read())
             {
-                VersionId = FnddsVersion.Id,
-                CreateDt = DateTime.UtcNow
-            };
+                var entity = new FnddsNutVal
+                {
+                    VersionId = FnddsVersion.Id,
+                    CreateDt = DateTime.UtcNow
+                };
 
-            SetModelValues(columns, reader, nutrient);
+                SetModelValues(columns, reader, entity);
 
-            nutrients.Add(nutrient);
+                entities.Add(entity);
 
-            if (_isDebugEnabled)
-            {
-                _logger.LogDebug("Table: {tableName}, Food code: {foodCode}, Nutrient code: {nutrientCode}",
-                    SourceTableName, nutrient.FoodCode, nutrient.NutrientCode);
+                if (_isDebugEnabled)
+                {
+                    _logger.LogDebug("Table: {tableName}, Food code: {foodCode}, Nutrient code: {nutrientCode}",
+                        SourceTableName, entity.FoodCode, entity.NutrientCode);
+                }
+
+                if (entities.Count > BatchSize)
+                {
+                    Context.FnddsNutVals.AddRange(entities);
+
+                    await Context.SaveChangesAsync();
+
+                    entities.Clear();
+                }
+
+                recordCount++;
             }
 
-            if (nutrients.Count > BatchSize)
+            if (entities.Count > 0)
             {
-                Context.FnddsNutVals.AddRange(nutrients);
+                Context.FnddsNutVals.AddRange(entities);
 
                 await Context.SaveChangesAsync();
-
-                nutrients.Clear();
             }
 
-            recordCount++;
+            return recordCount;
         }
-
-        if (nutrients.Count > 0)
+        catch (Exception e)
         {
-            Context.FnddsNutVals.AddRange(nutrients);
+            _logger.LogError(e, "Failed to create the records for table {tableName}.", TableName);
 
-            await Context.SaveChangesAsync();
+            throw;
         }
-
-        return recordCount;
     }
 }

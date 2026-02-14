@@ -37,10 +37,13 @@ try
     var fnddsLoader = scope.ServiceProvider.GetRequiredService<FnddsLoader>();
 
     await fnddsLoader.ImportDataAsync(arguments.FnddsVersion, arguments.ConnectionString);
+
+    Environment.Exit(0);
 }
 catch (Exception e)
 {
     Console.WriteLine("Failed to import the data.");
+    Console.WriteLine(e);
 
-    throw;
+    Environment.Exit(-1);
 }
