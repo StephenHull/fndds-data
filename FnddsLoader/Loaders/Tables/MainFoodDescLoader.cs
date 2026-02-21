@@ -49,61 +49,91 @@ public class MainFoodDescLoader : DataLoader
                 SourceName = "[Food code]",
                 DestinationName = "FoodCode",
                 IsOrderedBy = true,
-                Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[Start date]",
                 DestinationName = "StartDt",
-                Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256]
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[End date]",
                 DestinationName = "EndDt",
-                Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256]
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[Main food description]",
                 DestinationName = "MainFoodDescription",
-                Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[Abbreviated description]",
                 DestinationName = "AbbreviatedMainFoodDescription",
-                Versions = [1, 2, 4]
+                Versions =
+                [
+                    1, 2, 4,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[Fortification identifier]",
                 DestinationName = "FortificationIdentifier",
-                Versions = [32]
+                Versions =
+                [
+                    32,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[Fortification identifier code]",
                 DestinationName = "FortificationIdentifier",
-                Versions = [128]
+                Versions =
+                [
+                    128,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[WWEIA Category code]",
                 DestinationName = "CategoryNumber",
-                Versions = [128]
+                Versions =
+                [
+                    128,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[WWEIA Category number]",
                 DestinationName = "CategoryNumber",
-                Versions = [256, 512, 1024]
+                Versions =
+                [
+                    256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[WWEIA Category description]",
                 DestinationName = "CategoryDescription",
-                Versions = [256, 512, 1024]
+                Versions =
+                [
+                    128, 256, 512, 1024,
+                ],
             },
         ];
 

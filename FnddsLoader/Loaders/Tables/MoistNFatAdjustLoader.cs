@@ -44,37 +44,55 @@ public class MoistNFatAdjustLoader : DataLoader
                 SourceName = "[Food code]",
                 DestinationName = "FoodCode",
                 IsOrderedBy = true,
-                Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[Start date]",
                 DestinationName = "StartDt",
-                Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256]
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[End date]",
                 DestinationName = "EndDt",
-                Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256]
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[Moisture change]",
                 DestinationName = "MoistureChange",
-                Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[Fat change]",
                 DestinationName = "FatChange",
-                Versions = [1, 2, 4, 8, 16, 32, 64]
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[Type of fat]",
                 DestinationName = "TypeOfFat",
-                Versions = [1, 2, 4, 8, 16, 32, 64]
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64,
+                ],
             },
         ];
 

@@ -49,25 +49,37 @@ public class SubcodeDescLoader : DataLoader
                 SourceName = "[Subcode]",
                 DestinationName = "Subcode",
                 IsOrderedBy = true,
-                Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256]
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[Start date]",
                 DestinationName = "StartDt",
-                Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256]
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[End date]",
                 DestinationName = "EndDt",
-                Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256]
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[Subcode description]",
                 DestinationName = "SubcodeDescription",
-                Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256]
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256,
+                ],
             },
         ];
 

@@ -49,86 +49,128 @@ public class IngredNutValLoader : DataLoader
                 SourceName = "[Ingredient code]",
                 DestinationName = "IngredientCode",
                 IsOrderedBy = true,
-                Versions = [128, 256, 512, 1024]
+                Versions =
+                [
+                    128, 256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[Nutrient code]",
                 DestinationName = "NutrientCode",
                 IsOrderedBy = true,
-                Versions = [128, 256, 512, 1024]
+                Versions =
+                [
+                    128, 256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[Start date]",
                 DestinationName = "StartDt",
-                Versions = [128, 256]
+                Versions =
+                [
+                    128, 256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[End date]",
                 DestinationName = "EndDt",
-                Versions = [128, 256]
+                Versions =
+                [
+                    128, 256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[SR description]",
                 DestinationName = "IngredientDescription",
-                Versions = [128]
+                Versions =
+                [
+                    128,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[Ingredient description]",
                 DestinationName = "IngredientDescription",
-                Versions = [256, 512, 1024]
+                Versions =
+                [
+                    256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[Nutrient value]",
                 DestinationName = "NutrientValue",
-                Versions = [128, 256, 512, 1024]
+                Versions =
+                [
+                    128, 256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[Nutrient value source]",
                 DestinationName = "NutrientValueSource",
-                Versions = [128, 256, 512, 1024]
+                Versions =
+                [
+                    128, 256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[FDC ID]",
                 DestinationName = "FdcId",
-                Versions = [256, 512, 1024]
+                Versions =
+                [
+                    256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[SR 28 derivation code]",
                 DestinationName = "DerivationCode",
-                Versions = [128]
+                Versions =
+                [
+                    128,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[Derivation code]",
                 DestinationName = "DerivationCode",
-                Versions = [256, 512, 1024]
+                Versions =
+                [
+                    256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[SR 28 AddMod year]",
                 DestinationName = "SRAddModYear",
-                Versions = [128]
+                Versions =
+                [
+                    128,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[SR AddMod year]",
                 DestinationName = "SRAddModYear",
-                Versions = [256, 512, 1024]
+                Versions =
+                [
+                    256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[Foundation year acquired]",
                 DestinationName = "FoundationYearAcquired",
-                Versions = [256, 512, 1024]
+                Versions =
+                [
+                    256, 512, 1024,
+                ],
             },
         ];
 

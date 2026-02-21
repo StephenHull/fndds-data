@@ -49,31 +49,46 @@ public class FoodPortionDescLoader : DataLoader
                 SourceName = "[Portion code]",
                 DestinationName = "PortionCode",
                 IsOrderedBy = true,
-                Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[Start date]",
                 DestinationName = "StartDt",
-                Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256]
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[End date]",
                 DestinationName = "EndDt",
-                Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256]
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[Portion description]",
                 DestinationName = "PortionDescription",
-                Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[Change type]",
                 DestinationName = "ChangeType",
-                Versions = [1, 2, 4, 8, 16, 32]
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32,
+                ],
             },
         ];
 

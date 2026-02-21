@@ -43,110 +43,164 @@ public class FnddsIngredLoader : DataLoader
                 SourceName = "[Food code]",
                 DestinationName = "FoodCode",
                 IsOrderedBy = true,
-                Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                ],
+            },
+            new DataColumnModel
+            {
+                SourceName = "[Start date]",
+                DestinationName = "StartDt",
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                ],
+            },
+            new DataColumnModel
+            {
+                SourceName = "[End date]",
+                DestinationName = "EndDt",
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[Seq num]",
                 DestinationName = "SeqNum",
                 IsOrderedBy = true,
-                Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
-            },
-            new DataColumnModel
-            {
-                SourceName = "[Start date]",
-                DestinationName = "StartDt",
-                Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256]
-            },
-            new DataColumnModel
-            {
-                SourceName = "[End date]",
-                DestinationName = "EndDt",
-                Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256]
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[SR code]",
                 DestinationName = "IngredientCode",
-                Versions = [1, 2, 4, 8, 16, 32, 64]
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[Ingredient code]",
                 DestinationName = "IngredientCode",
-                Versions = [128, 256, 512, 1024]
+                Versions =
+                [
+                    128, 256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[SR description]",
                 DestinationName = "IngredientDescription",
-                Versions = [1, 2, 4, 8, 16, 32, 64]
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[Ingredient description]",
                 DestinationName = "IngredientDescription",
-                Versions = [128, 256, 512, 1024]
+                Versions =
+                [
+                    128, 256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "Amount",
                 DestinationName = "Amount",
-                Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "Measure",
                 DestinationName = "Measure",
-                Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[Portion code]",
                 DestinationName = "PortionCode",
-                Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[Retention code]",
                 DestinationName = "RetentionCode",
-                Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "Flag",
                 DestinationName = "Flag",
-                Versions = [1, 2, 4, 8, 16, 32, 64]
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "Weight",
                 DestinationName = "IngredientWeight",
-                Versions = [1, 2, 4, 8, 16, 32, 64]
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[Ingredient weight]",
                 DestinationName = "IngredientWeight",
-                Versions = [128, 256, 512, 1024]
+                Versions =
+                [
+                    128, 256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[Change type to SR Code]",
                 DestinationName = "ChangeTypeToSRCode",
-                Versions = [1, 2, 4, 8, 16, 32]
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[Change type to weight]",
                 DestinationName = "ChangeTypeToWeight",
-                Versions = [1, 2, 4, 8, 16, 32]
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[Change type to retn code]",
                 DestinationName = "ChangeTypeToRetnCode",
-                Versions = [1, 2, 4, 8, 16, 32]
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32,
+                ],
             },
         ];
 

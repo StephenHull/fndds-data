@@ -48,26 +48,38 @@ public class DerivDescLoader : DataLoader
                 SourceName = "[SR 28 derivation code]",
                 DestinationName = "DerivationCode",
                 IsOrderedBy = true,
-                Versions = [128]
+                Versions =
+                [
+                    128,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[Derivation code]",
                 DestinationName = "DerivationCode",
                 IsOrderedBy = true,
-                Versions = [256, 512, 1024]
+                Versions =
+                [
+                    256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[SR 28 derivation description]",
                 DestinationName = "DerivationDescription",
-                Versions = [128]
+                Versions =
+                [
+                    128,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[Derivation description]",
                 DestinationName = "DerivationDescription",
-                Versions = [256, 512, 1024]
+                Versions =
+                [
+                    256, 512, 1024,
+                ],
             },
         ];
 

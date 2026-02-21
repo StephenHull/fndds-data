@@ -48,31 +48,46 @@ public class NutDescLoader : DataLoader
                 SourceName = "[Nutrient code]",
                 DestinationName = "NutrientCode",
                 IsOrderedBy = true,
-                Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[Nutrient description]",
                 DestinationName = "NutrientDescription",
-                Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "Tagname",
                 DestinationName = "Tagname",
-                Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "Unit",
                 DestinationName = "Unit",
-                Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "Decimals",
                 DestinationName = "Decimals",
-                Versions = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                ],
             },
         ];
 
