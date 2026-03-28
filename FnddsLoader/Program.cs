@@ -36,7 +36,8 @@ try
 
     var fnddsLoader = scope.ServiceProvider.GetRequiredService<FnddsLoader>();
 
-    await fnddsLoader.ImportDataAsync(arguments.FnddsVersion, arguments.ConnectionString);
+    await fnddsLoader.ImportDataAsync(arguments.FnddsVersion, arguments.FnddsConnectionString,
+        arguments.FpedConnectionString, arguments.FpidConnectionString);
 
     Environment.Exit(0);
 }

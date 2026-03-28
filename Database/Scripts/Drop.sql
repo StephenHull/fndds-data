@@ -1,0 +1,21 @@
+﻿DROP TABLE IF EXISTS [dbo].[FnddsIngredEquiv]
+DROP TABLE IF EXISTS [dbo].[ModNutVal]
+DROP TABLE IF EXISTS [dbo].[ModEquiv]
+
+DROP TABLE IF EXISTS [dbo].[AddFoodDesc]
+DROP TABLE IF EXISTS [dbo].[FnddsIngred]
+DROP TABLE IF EXISTS [dbo].[FnddsNutVal]
+DROP TABLE IF EXISTS [dbo].[FoodEquiv]
+DROP TABLE IF EXISTS [dbo].[FoodWeight]
+DROP TABLE IF EXISTS [dbo].[IngredEquiv]
+DROP TABLE IF EXISTS [dbo].[IngredNutVal]
+DROP TABLE IF EXISTS [dbo].[ModDesc]
+DROP TABLE IF EXISTS [dbo].[MoistNFatAdjust]
+
+DROP TABLE IF EXISTS [dbo].[DerivDesc]
+DROP TABLE IF EXISTS [dbo].[FoodPortionDesc]
+DROP TABLE IF EXISTS [dbo].[MainFoodDesc]
+DROP TABLE IF EXISTS [dbo].[NutDesc]
+DROP TABLE IF EXISTS [dbo].[SubcodeDesc]
+
+DROP TABLE IF EXISTS [dbo].[FnddsVersion]

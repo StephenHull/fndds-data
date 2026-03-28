@@ -121,6 +121,8 @@ public abstract class DataLoaderBase
             {
                 if (column.IsIgnored)
                 {
+                    index++;
+
                     continue;
                 }
 

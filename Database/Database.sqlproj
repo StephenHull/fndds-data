@@ -56,6 +56,7 @@
   <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
     <Folder Include="Properties" />
+    <Folder Include="Scripts" />
     <Folder Include="Tables" />
     <Folder Include="Tables\Indexes\" />
     <Folder Include="Tables\ForeignKeys\" />
@@ -64,12 +65,18 @@
     <Build Include="Tables\AddFoodDesc.sql" />
     <Build Include="Tables\DerivDesc.sql" />
     <Build Include="Tables\FnddsIngred.sql" />
+    <Build Include="Tables\FnddsIngredEquiv.sql" />
     <Build Include="Tables\FnddsNutVal.sql" />
     <Build Include="Tables\FnddsVersion.sql" />
+    <Build Include="Tables\FoodEquiv.sql" />
     <Build Include="Tables\FoodPortionDesc.sql" />
     <Build Include="Tables\FoodWeight.sql" />
+    <Build Include="Tables\IngredEquiv.sql" />
     <Build Include="Tables\IngredNutVal.sql" />
     <Build Include="Tables\MainFoodDesc.sql" />
+    <Build Include="Tables\ModDesc.sql" />
+    <Build Include="Tables\ModEquiv.sql" />
+    <Build Include="Tables\ModNutVal.sql" />
     <Build Include="Tables\MoistNFatAdjust.sql" />
     <Build Include="Tables\NutDesc.sql" />
     <Build Include="Tables\SubcodeDesc.sql" />
@@ -77,13 +84,19 @@
     <Build Include="Tables\ForeignKeys\FK_DerivDesc_FnddsVersion.sql" />
     <Build Include="Tables\ForeignKeys\FK_FnddsIngred_FoodPortionDesc.sql" />
     <Build Include="Tables\ForeignKeys\FK_FnddsIngred_MainFoodDesc.sql" />
+    <Build Include="Tables\ForeignKeys\FK_FnddsIngredEquiv_FnddsIngred.sql" />
+    <Build Include="Tables\ForeignKeys\FK_FnddsIngredEquiv_IngredEquiv.sql" />
     <Build Include="Tables\ForeignKeys\FK_FnddsNutVal_MainFoodDesc.sql" />
     <Build Include="Tables\ForeignKeys\FK_FnddsNutVal_NutDesc.sql" />
+    <Build Include="Tables\ForeignKeys\FK_FoodEquiv_MainFoodDesc.sql" />
     <Build Include="Tables\ForeignKeys\FK_FoodPortionDesc_FnddsVersion.sql" />
     <Build Include="Tables\ForeignKeys\FK_FoodWeight_FoodPortionDesc.sql" />
     <Build Include="Tables\ForeignKeys\FK_FoodWeight_MainFoodDesc.sql" />
     <Build Include="Tables\ForeignKeys\FK_IngredNutVal_NutDesc.sql" />
     <Build Include="Tables\ForeignKeys\FK_MainFoodDesc_FnddsVersion.sql" />
+    <Build Include="Tables\ForeignKeys\FK_ModDesc_MainFoodDesc.sql" />
+    <Build Include="Tables\ForeignKeys\FK_ModEquiv_ModDesc.sql" />
+    <Build Include="Tables\ForeignKeys\FK_ModNutVal_ModDesc.sql" />
     <Build Include="Tables\ForeignKeys\FK_MoistNFatAdjust_MainFoodDesc.sql" />
     <Build Include="Tables\ForeignKeys\FK_NutDesc_FnddsVersion.sql" />
     <Build Include="Tables\ForeignKeys\FK_SubcodeDesc_FnddsVersion.sql" />
@@ -98,5 +111,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Database.publish.xml" />
+    <None Include="Scripts\Drop.sql" />
   </ItemGroup>
 </Project>

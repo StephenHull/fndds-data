@@ -11,7 +11,7 @@ public static partial class ArgumentExtensions
 
     public static LoaderArguments GetArguments(this string[] args)
     {
-        if (args.Length != 2)
+        if (args.Length < 1)
         {
             Console.WriteLine("Error! No command-line arguments were specified.");
             Console.WriteLine("Required arguments:");
@@ -36,18 +36,59 @@ public static partial class ArgumentExtensions
 
         if (!FnddsVersion.TryParse(args[0], out var version) || version == null)
         {
+            Console.WriteLine("Error! No command-line arguments were specified.");
+
             throw new ArgumentException("The FNDDS Version was invalid.");
+        }
+
+        if (args.Length < 2)
+        {
+            Console.WriteLine("Error! The FNDDS Connection String is required.");
+
+            throw new ArgumentException("The FNDDS Connection String is required.");
         }
 
         if (!ConnectionStringRegex().IsMatch(args[1]))
         {
-            throw new ArgumentException("The Connection String was invalid.");
+            Console.WriteLine("Error! The FNDDS Connection String was invalid.");
+
+            throw new ArgumentException("The FNDDS Connection String was invalid.");
         }
 
-        return new LoaderArguments
+        var loaderArguments = new LoaderArguments
         {
             FnddsVersion = version,
-            ConnectionString = args[1]
+            FnddsConnectionString = args[1]
         };
+
+        if (args.Length > 2)
+        {
+            if (args.Length < 4)
+            {
+                Console.WriteLine("Error! The FPED and FPID Connection Strings are required.");
+
+                throw new ArgumentException("The FPED and FPID Connection Strings are required.");
+            }
+
+            if (!ConnectionStringRegex().IsMatch(args[2]))
+            {
+                Console.WriteLine("Error! The FPED Connection String was invalid.");
+
+                throw new ArgumentException("The FPED Connection String was invalid.");
+            }
+
+            loaderArguments.FpedConnectionString = args[2];
+
+            if (!ConnectionStringRegex().IsMatch(args[3]))
+            {
+                Console.WriteLine("Error! The FPID Connection String was invalid.");
+
+                throw new ArgumentException("The FPID Connection String was invalid.");
+            }
+
+            loaderArguments.FpidConnectionString = args[3];
+        }
+
+        return loaderArguments;
     }
 }

@@ -33,7 +33,11 @@ public partial class MainFoodDesc
 
     public virtual ICollection<FnddsNutVal> FnddsNutVals { get; set; } = new List<FnddsNutVal>();
 
+    public virtual FoodEquiv FoodEquiv { get; set; }
+
     public virtual ICollection<FoodWeight> FoodWeights { get; set; } = new List<FoodWeight>();
+
+    public virtual ICollection<ModDesc> ModDescs { get; set; } = new List<ModDesc>();
 
     public virtual MoistNFatAdjust MoistNFatAdjust { get; set; }
 

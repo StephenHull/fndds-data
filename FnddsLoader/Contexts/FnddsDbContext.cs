@@ -20,17 +20,29 @@ public partial class FnddsDbContext : DbContext
 
     public virtual DbSet<FnddsIngred> FnddsIngreds { get; set; }
 
+    public virtual DbSet<FnddsIngredEquiv> FnddsIngredEquivs { get; set; }
+
     public virtual DbSet<FnddsNutVal> FnddsNutVals { get; set; }
 
     public virtual DbSet<FnddsVersion> FnddsVersions { get; set; }
+
+    public virtual DbSet<FoodEquiv> FoodEquivs { get; set; }
 
     public virtual DbSet<FoodPortionDesc> FoodPortionDescs { get; set; }
 
     public virtual DbSet<FoodWeight> FoodWeights { get; set; }
 
+    public virtual DbSet<IngredEquiv> IngredEquivs { get; set; }
+
     public virtual DbSet<IngredNutVal> IngredNutVals { get; set; }
 
     public virtual DbSet<MainFoodDesc> MainFoodDescs { get; set; }
+
+    public virtual DbSet<ModDesc> ModDescs { get; set; }
+
+    public virtual DbSet<ModEquiv> ModEquivs { get; set; }
+
+    public virtual DbSet<ModNutVal> ModNutVals { get; set; }
 
     public virtual DbSet<MoistNFatAdjust> MoistNFatAdjusts { get; set; }
 
@@ -133,6 +145,26 @@ public partial class FnddsDbContext : DbContext
                 .HasConstraintName("FK_FnddsIngred_FoodPortionDesc");
         });
 
+        modelBuilder.Entity<FnddsIngredEquiv>(entity =>
+        {
+            entity.HasKey(e => new { e.FoodCode, e.SeqNum, e.IngredientCode, e.VersionId });
+
+            entity.ToTable("FnddsIngredEquiv");
+
+            entity.Property(e => e.VersionId).HasColumnName("VersionID");
+            entity.Property(e => e.CreateDt)
+                .HasDefaultValueSql("(getutcdate())")
+                .HasColumnName("CreateDT");
+
+            entity.HasOne(d => d.IngredEquiv).WithMany(p => p.FnddsIngredEquivs)
+                .HasForeignKey(d => new { d.IngredientCode, d.VersionId })
+                .HasConstraintName("FK_FnddsIngredEquiv_IngredEquiv");
+
+            entity.HasOne(d => d.FnddsIngred).WithOne(p => p.FnddsIngredEquiv)
+                .HasForeignKey<FnddsIngredEquiv>(d => new { d.FoodCode, d.SeqNum, d.IngredientCode, d.VersionId })
+                .HasConstraintName("FK_FnddsIngredEquiv_FnddsIngred");
+        });
+
         modelBuilder.Entity<FnddsNutVal>(entity =>
         {
             entity.HasKey(e => new { e.FoodCode, e.NutrientCode, e.VersionId });
@@ -161,8 +193,6 @@ public partial class FnddsDbContext : DbContext
 
         modelBuilder.Entity<FnddsVersion>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__FnddsVer__3214EC27E349BB29");
-
             entity.ToTable("FnddsVersion");
 
             entity.Property(e => e.Id)
@@ -171,6 +201,63 @@ public partial class FnddsDbContext : DbContext
             entity.Property(e => e.CreateDt)
                 .HasDefaultValueSql("(getutcdate())")
                 .HasColumnName("CreateDT");
+        });
+
+        modelBuilder.Entity<FoodEquiv>(entity =>
+        {
+            entity.HasKey(e => new { e.FoodCode, e.VersionId });
+
+            entity.ToTable("FoodEquiv");
+
+            entity.Property(e => e.VersionId).HasColumnName("VersionID");
+            entity.Property(e => e.ADD_SUGARS).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.A_DRINKS).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.CreateDt)
+                .HasDefaultValueSql("(getutcdate())")
+                .HasColumnName("CreateDT");
+            entity.Property(e => e.D_CHEESE).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.D_MILK).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.D_TOTAL).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.D_YOGURT).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.F_CITMLB).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.F_JUICE).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.F_OTHER).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.F_TOTAL).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.FoodDescription)
+                .IsRequired()
+                .HasMaxLength(200)
+                .IsUnicode(false);
+            entity.Property(e => e.G_REFINED).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.G_TOTAL).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.G_WHOLE).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.OILS).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.PF_CUREDMEAT).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.PF_EGGS).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.PF_LEGUMES).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.PF_MEAT).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.PF_MPS_TOTAL).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.PF_NUTSDS).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.PF_ORGAN).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.PF_POULT).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.PF_SEAFD_HI).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.PF_SEAFD_LOW).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.PF_SOY).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.PF_TOTAL).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.SOLID_FATS).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.V_DRKGR).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.V_LEGUMES).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.V_OTHER).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.V_REDOR_OTHER).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.V_REDOR_TOMATO).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.V_REDOR_TOTAL).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.V_STARCHY_OTHER).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.V_STARCHY_POTATO).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.V_STARCHY_TOTAL).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.V_TOTAL).HasColumnType("decimal(6, 3)");
+
+            entity.HasOne(d => d.MainFoodDesc).WithOne(p => p.FoodEquiv)
+                .HasForeignKey<FoodEquiv>(d => new { d.FoodCode, d.VersionId })
+                .HasConstraintName("FK_FoodEquiv_MainFoodDesc");
         });
 
         modelBuilder.Entity<FoodPortionDesc>(entity =>
@@ -225,6 +312,59 @@ public partial class FnddsDbContext : DbContext
                 .HasForeignKey(d => new { d.PortionCode, d.VersionId })
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_FoodWeight_FoodPortionDesc");
+        });
+
+        modelBuilder.Entity<IngredEquiv>(entity =>
+        {
+            entity.HasKey(e => new { e.IngredientCode, e.VersionId });
+
+            entity.ToTable("IngredEquiv");
+
+            entity.Property(e => e.VersionId).HasColumnName("VersionID");
+            entity.Property(e => e.ADD_SUGARS).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.A_DRINKS).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.CreateDt)
+                .HasDefaultValueSql("(getutcdate())")
+                .HasColumnName("CreateDT");
+            entity.Property(e => e.D_CHEESE).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.D_MILK).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.D_TOTAL).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.D_YOGURT).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.F_CITMLB).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.F_JUICE).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.F_OTHER).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.F_TOTAL).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.G_REFINED).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.G_TOTAL).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.G_WHOLE).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.IngredientDescription)
+                .IsRequired()
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.OILS).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.PF_CUREDMEAT).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.PF_EGGS).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.PF_LEGUMES).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.PF_MEAT).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.PF_MPS_TOTAL).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.PF_NUTSDS).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.PF_ORGAN).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.PF_POULT).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.PF_SEAFD_HI).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.PF_SEAFD_LOW).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.PF_SOY).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.PF_TOTAL).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.SOLID_FATS).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.V_DRKGR).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.V_LEGUMES).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.V_OTHER).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.V_REDOR_OTHER).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.V_REDOR_TOMATO).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.V_REDOR_TOTAL).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.V_STARCHY_OTHER).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.V_STARCHY_POTATO).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.V_STARCHY_TOTAL).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.V_TOTAL).HasColumnType("decimal(6, 3)");
         });
 
         modelBuilder.Entity<IngredNutVal>(entity =>
@@ -289,6 +429,101 @@ public partial class FnddsDbContext : DbContext
             entity.HasOne(d => d.Version).WithMany(p => p.MainFoodDescs)
                 .HasForeignKey(d => d.VersionId)
                 .HasConstraintName("FK_MainFoodDesc_FnddsVersion");
+        });
+
+        modelBuilder.Entity<ModDesc>(entity =>
+        {
+            entity.HasKey(e => new { e.ModificationCode, e.VersionId });
+
+            entity.ToTable("ModDesc");
+
+            entity.Property(e => e.VersionId).HasColumnName("VersionID");
+            entity.Property(e => e.CreateDt)
+                .HasDefaultValueSql("(getutcdate())")
+                .HasColumnName("CreateDT");
+            entity.Property(e => e.EndDt).HasColumnName("EndDT");
+            entity.Property(e => e.ModificationDescription)
+                .IsRequired()
+                .HasMaxLength(240)
+                .IsUnicode(false);
+            entity.Property(e => e.StartDt).HasColumnName("StartDT");
+
+            entity.HasOne(d => d.MainFoodDesc).WithMany(p => p.ModDescs)
+                .HasForeignKey(d => new { d.FoodCode, d.VersionId })
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_ModDesc_MainFoodDesc");
+        });
+
+        modelBuilder.Entity<ModEquiv>(entity =>
+        {
+            entity.HasKey(e => new { e.ModificationCode, e.VersionId });
+
+            entity.ToTable("ModEquiv");
+
+            entity.Property(e => e.VersionId).HasColumnName("VersionID");
+            entity.Property(e => e.ADD_SUGARS).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.A_DRINKS).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.CreateDt)
+                .HasDefaultValueSql("(getutcdate())")
+                .HasColumnName("CreateDT");
+            entity.Property(e => e.D_CHEESE).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.D_MILK).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.D_TOTAL).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.D_YOGURT).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.F_CITMLB).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.F_JUICE).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.F_OTHER).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.F_TOTAL).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.G_REFINED).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.G_TOTAL).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.G_WHOLE).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.OILS).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.PF_CUREDMEAT).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.PF_EGGS).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.PF_LEGUMES).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.PF_MEAT).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.PF_MPS_TOTAL).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.PF_NUTSDS).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.PF_ORGAN).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.PF_POULT).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.PF_SEAFD_HI).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.PF_SEAFD_LOW).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.PF_SOY).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.PF_TOTAL).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.SOLID_FATS).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.V_DRKGR).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.V_LEGUMES).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.V_OTHER).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.V_REDOR_OTHER).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.V_REDOR_TOMATO).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.V_REDOR_TOTAL).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.V_STARCHY_OTHER).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.V_STARCHY_POTATO).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.V_STARCHY_TOTAL).HasColumnType("decimal(6, 3)");
+            entity.Property(e => e.V_TOTAL).HasColumnType("decimal(6, 3)");
+
+            entity.HasOne(d => d.ModDesc).WithOne(p => p.ModEquiv)
+                .HasForeignKey<ModEquiv>(d => new { d.ModificationCode, d.VersionId })
+                .HasConstraintName("FK_ModEquiv_M0odDesc");
+        });
+
+        modelBuilder.Entity<ModNutVal>(entity =>
+        {
+            entity.HasKey(e => new { e.ModificationCode, e.NutrientCode, e.VersionId });
+
+            entity.ToTable("ModNutVal");
+
+            entity.Property(e => e.VersionId).HasColumnName("VersionID");
+            entity.Property(e => e.CreateDt)
+                .HasDefaultValueSql("(getutcdate())")
+                .HasColumnName("CreateDT");
+            entity.Property(e => e.EndDt).HasColumnName("EndDT");
+            entity.Property(e => e.NutrientValue).HasColumnType("decimal(10, 3)");
+            entity.Property(e => e.StartDt).HasColumnName("StartDT");
+
+            entity.HasOne(d => d.ModDesc).WithMany(p => p.ModNutVals)
+                .HasForeignKey(d => new { d.ModificationCode, d.VersionId })
+                .HasConstraintName("FK_ModNutVal_ModDesc");
         });
 
         modelBuilder.Entity<MoistNFatAdjust>(entity =>

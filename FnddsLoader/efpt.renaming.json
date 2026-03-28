@@ -13,7 +13,7 @@
                   "NewName": "VersionId"
                },
                {
-                  "Name": "StartDt",
+                  "Name": "StartDT",
                   "NewName": "StartDt"
                },
                {
@@ -23,6 +23,10 @@
                {
                   "Name": "CreateDT",
                   "NewName": "CreateDt"
+               },
+               {
+                  "Name": "StartDt",
+                  "NewName": "StartDt"
                }
             ],
             "Name": "AddFoodDesc",
@@ -49,7 +53,7 @@
                   "NewName": "VersionId"
                },
                {
-                  "Name": "StartDt",
+                  "Name": "StartDT",
                   "NewName": "StartDt"
                },
                {
@@ -71,7 +75,21 @@
                   "NewName": "VersionId"
                },
                {
-                  "Name": "StartDt",
+                  "Name": "CreateDT",
+                  "NewName": "CreateDt"
+               }
+            ],
+            "Name": "FnddsIngredEquiv",
+            "NewName": "FnddsIngredEquiv"
+         },
+         {
+            "Columns": [
+               {
+                  "Name": "VersionID",
+                  "NewName": "VersionId"
+               },
+               {
+                  "Name": "StartDT",
                   "NewName": "StartDt"
                },
                {
@@ -107,7 +125,21 @@
                   "NewName": "VersionId"
                },
                {
-                  "Name": "StartDt",
+                  "Name": "CreateDT",
+                  "NewName": "CreateDt"
+               }
+            ],
+            "Name": "FoodEquiv",
+            "NewName": "FoodEquiv"
+         },
+         {
+            "Columns": [
+               {
+                  "Name": "VersionID",
+                  "NewName": "VersionId"
+               },
+               {
+                  "Name": "StartDT",
                   "NewName": "StartDt"
                },
                {
@@ -129,7 +161,7 @@
                   "NewName": "VersionId"
                },
                {
-                  "Name": "StartDt",
+                  "Name": "StartDT",
                   "NewName": "StartDt"
                },
                {
@@ -151,7 +183,21 @@
                   "NewName": "VersionId"
                },
                {
-                  "Name": "StartDt",
+                  "Name": "CreateDT",
+                  "NewName": "CreateDt"
+               }
+            ],
+            "Name": "IngredEquiv",
+            "NewName": "IngredEquiv"
+         },
+         {
+            "Columns": [
+               {
+                  "Name": "VersionID",
+                  "NewName": "VersionId"
+               },
+               {
+                  "Name": "StartDT",
                   "NewName": "StartDt"
                },
                {
@@ -177,7 +223,7 @@
                   "NewName": "VersionId"
                },
                {
-                  "Name": "StartDt",
+                  "Name": "StartDT",
                   "NewName": "StartDt"
                },
                {
@@ -199,7 +245,65 @@
                   "NewName": "VersionId"
                },
                {
-                  "Name": "StartDt",
+                  "Name": "StartDT",
+                  "NewName": "StartDt"
+               },
+               {
+                  "Name": "EndDT",
+                  "NewName": "EndDt"
+               },
+               {
+                  "Name": "CreateDT",
+                  "NewName": "CreateDt"
+               }
+            ],
+            "Name": "ModDesc",
+            "NewName": "ModDesc"
+         },
+         {
+            "Columns": [
+               {
+                  "Name": "VersionID",
+                  "NewName": "VersionId"
+               },
+               {
+                  "Name": "CreateDT",
+                  "NewName": "CreateDt"
+               }
+            ],
+            "Name": "ModEquiv",
+            "NewName": "ModEquiv"
+         },
+         {
+            "Columns": [
+               {
+                  "Name": "VersionID",
+                  "NewName": "VersionId"
+               },
+               {
+                  "Name": "StartDT",
+                  "NewName": "StartDt"
+               },
+               {
+                  "Name": "EndDT",
+                  "NewName": "EndDt"
+               },
+               {
+                  "Name": "CreateDT",
+                  "NewName": "CreateDt"
+               }
+            ],
+            "Name": "ModNutVal",
+            "NewName": "ModNutVal"
+         },
+         {
+            "Columns": [
+               {
+                  "Name": "VersionID",
+                  "NewName": "VersionId"
+               },
+               {
+                  "Name": "StartDT",
                   "NewName": "StartDt"
                },
                {
@@ -235,7 +339,7 @@
                   "NewName": "VersionId"
                },
                {
-                  "Name": "StartDt",
+                  "Name": "StartDT",
                   "NewName": "StartDt"
                },
                {

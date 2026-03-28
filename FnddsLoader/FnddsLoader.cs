@@ -36,9 +36,12 @@ public class FnddsLoader
     /// Imports data from a source database.
     /// </summary>
     /// <param name="fnddsVersion">The FNDDS version.</param>
-    /// <param name="connString">The connection string for the source database.</param>
+    /// <param name="fnddsConnString">The FNDDS connection string for the source database.</param>
+    /// <param name="fpedConnString">The FPED connection string for the source database.</param>
+    /// <param name="fpidConnString">The FPID connection string for the source database.</param>
     /// <returns>Returns true if the method completes successfully.</returns>
-    public async Task<bool> ImportDataAsync(IFnddsVersion fnddsVersion, string connString)
+    public async Task<bool> ImportDataAsync(IFnddsVersion fnddsVersion, string fnddsConnString, string fpedConnString,
+        string fpidConnString)
     {
         try
         {
@@ -64,33 +67,85 @@ public class FnddsLoader
 
             await _dbContext.SaveChangesAsync();
 
-            using var connection = new OleDbConnection(connString);
-
-            await connection.OpenAsync();
-
-            var loaders =
-                new List<DataLoader>
-                {
-                    new DerivDescLoader(version, connection, _dbContext),
-                    new FoodPortionDescLoader(version, connection, _dbContext),
-                    new MainFoodDescLoader(version, connection, _dbContext),
-                    new AddFoodDescLoader(version, connection, _dbContext),
-                    new FnddsIngredLoader(version, connection, _dbContext),
-                    new NutDescLoader(version, connection, _dbContext),
-                    new FnddsNutValLoader(version, connection, _dbContext),
-                    new FoodWeightLoader(version, connection, _dbContext),
-                    new MoistNFatAdjustLoader(version, connection, _dbContext),
-                    new IngredNutValLoader(version, connection, _dbContext),
-                    new SubcodeDescLoader(version, connection, _dbContext),
-                };
-
-            foreach (var loader in loaders)
+            using (var connection = new OleDbConnection(fnddsConnString))
             {
-                var recordsLoaded = await loader.LoadAsync();
+                await connection.OpenAsync();
 
-                if (_isDebugEnabled)
+                var loaders =
+                    new List<DataLoader>
+                    {
+                        new DerivDescLoader(version, connection, _dbContext),
+                        new FoodPortionDescLoader(version, connection, _dbContext),
+                        new MainFoodDescLoader(version, connection, _dbContext),
+                        new NutDescLoader(version, connection, _dbContext),
+                        new SubcodeDescLoader(version, connection, _dbContext),
+
+                        new AddFoodDescLoader(version, connection, _dbContext),
+                        new FnddsIngredLoader(version, connection, _dbContext),
+                        new FnddsNutValLoader(version, connection, _dbContext),
+                        new FoodWeightLoader(version, connection, _dbContext),
+                        new IngredNutValLoader(version, connection, _dbContext),
+                        new ModDescLoader(version, connection, _dbContext),
+                        new MoistNFatAdjustLoader(version, connection, _dbContext),
+
+                        new ModNutValLoader(version, connection, _dbContext),
+                    };
+
+                foreach (var loader in loaders)
                 {
-                    _logger.LogDebug("Table: {tableName}, Records: {recordCount}", loader.TableName, recordsLoaded);
+                    var recordsLoaded = await loader.LoadAsync();
+
+                    if (_isDebugEnabled)
+                    {
+                        _logger.LogDebug("Table: {tableName}, Records: {recordCount}", loader.TableName, recordsLoaded);
+                    }
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(fpedConnString) && !string.IsNullOrWhiteSpace(fpidConnString))
+            {
+                using (var connection = new OleDbConnection(fpedConnString))
+                {
+                    await connection.OpenAsync();
+
+                    var loaders =
+                        new List<DataLoader>
+                        {
+                            new FoodEquivLoader(version, connection, _dbContext),
+                        };
+
+                    foreach (var loader in loaders)
+                    {
+                        var recordsLoaded = await loader.LoadAsync();
+
+                        if (_isDebugEnabled)
+                        {
+                            _logger.LogDebug("Table: {tableName}, Records: {recordCount}", loader.TableName,
+                                recordsLoaded);
+                        }
+                    }
+                }
+
+                using (var connection = new OleDbConnection(fpidConnString))
+                {
+                    await connection.OpenAsync();
+
+                    var loaders =
+                        new List<DataLoader>
+                        {
+                            new IngredEquivLoader(version, connection, _dbContext),
+                        };
+
+                    foreach (var loader in loaders)
+                    {
+                        var recordsLoaded = await loader.LoadAsync();
+
+                        if (_isDebugEnabled)
+                        {
+                            _logger.LogDebug("Table: {tableName}, Records: {recordCount}", loader.TableName,
+                                recordsLoaded);
+                        }
+                    }
                 }
             }
 

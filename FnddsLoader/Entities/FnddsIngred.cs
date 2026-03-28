@@ -41,6 +41,8 @@ public partial class FnddsIngred
 
     public DateTime CreateDt { get; set; }
 
+    public virtual FnddsIngredEquiv FnddsIngredEquiv { get; set; }
+
     public virtual FoodPortionDesc FoodPortionDesc { get; set; }
 
     public virtual MainFoodDesc MainFoodDesc { get; set; }

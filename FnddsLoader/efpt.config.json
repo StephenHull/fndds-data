@@ -31,11 +31,19 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[FnddsIngredEquiv]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[FnddsNutVal]",
          "ObjectType": 0
       },
       {
          "Name": "[dbo].[FnddsVersion]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[FoodEquiv]",
          "ObjectType": 0
       },
       {
@@ -47,11 +55,27 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[IngredEquiv]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[IngredNutVal]",
          "ObjectType": 0
       },
       {
          "Name": "[dbo].[MainFoodDesc]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ModDesc]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ModEquiv]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ModNutVal]",
          "ObjectType": 0
       },
       {
