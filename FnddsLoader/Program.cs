@@ -39,6 +39,8 @@ try
     await fnddsLoader.ImportDataAsync(arguments.FnddsVersion, arguments.FnddsConnectionString,
         arguments.FpedConnectionString, arguments.FpidConnectionString);
 
+    Console.WriteLine("Successfully imported the data.");
+
     Environment.Exit(0);
 }
 catch (Exception e)
