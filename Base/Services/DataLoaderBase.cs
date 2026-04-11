@@ -104,6 +104,17 @@ public abstract class DataLoaderBase
     }
 
     /// <summary>
+    /// Perform any task(s) needed to prepare to load the data from the source database 
+    /// into the destination database.
+    /// </summary>
+    /// <returns>A value indicating whether or not the tasks were successful.</returns>
+    public virtual Task<bool> PrepareToLoadAsync()
+    {
+        // Nothing to do
+        return Task.FromResult(true);
+    }
+
+    /// <summary>
     /// Sets the model values using the data from the source database.
     /// </summary>
     /// <param name="columns">The database column descriptions.</param>

@@ -140,4 +140,34 @@ public class SubcodeDescLoader : DataLoader
             throw;
         }
     }
+
+    public override async Task<bool> PrepareToLoadAsync()
+    {
+        try
+        {
+            var sql = FnddsVersion.Id switch
+            {
+                1 or 2 or 4 =>
+                    "UPDATE SubcodeDesc " +
+                    "SET [Subcode description] = 'Default Gram Weights' " +
+                    "WHERE (Subcode = 0)",
+                _ => string.Empty,
+            };
+
+            if (!string.IsNullOrWhiteSpace(sql))
+            {
+                using var command = new OleDbCommand(sql, Connection);
+
+                await command.ExecuteNonQueryAsync();
+            }
+
+            return true;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Failed to prepare to load the records for table {tableName}.", TableName);
+
+            return false;
+        }
+    }
 }

@@ -93,6 +93,8 @@ public class FnddsLoader
 
                 foreach (var loader in loaders)
                 {
+                    await loader.PrepareToLoadAsync();
+
                     var recordsLoaded = await loader.LoadAsync();
 
                     if (_isDebugEnabled)
@@ -116,6 +118,8 @@ public class FnddsLoader
 
                     foreach (var loader in loaders)
                     {
+                        await loader.PrepareToLoadAsync();
+
                         var recordsLoaded = await loader.LoadAsync();
 
                         if (_isDebugEnabled)
@@ -138,6 +142,8 @@ public class FnddsLoader
 
                     foreach (var loader in loaders)
                     {
+                        await loader.PrepareToLoadAsync();
+
                         var recordsLoaded = await loader.LoadAsync();
 
                         if (_isDebugEnabled)
