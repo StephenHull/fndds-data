@@ -1,0 +1,2 @@
+﻿CREATE INDEX IX_AddFoodDesc_AdditionalFoodDescription
+ON [dbo].AddFoodDesc (AdditionalFoodDescription)

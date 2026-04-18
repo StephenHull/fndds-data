@@ -1,1 +1,0 @@
-﻿CREATE INDEX IDX_IngredientCode ON [dbo].FnddsIngred (IngredientCode)

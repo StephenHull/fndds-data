@@ -1,0 +1,360 @@
+﻿[
+   {
+      "ColumnPatternReplaceWith": "",
+      "ColumnRegexPattern": "^(tbl)",
+      "SchemaName": "dbo",
+      "TablePatternReplaceWith": "",
+      "TableRegexPattern": "^(tbl)",
+      "Tables": [
+         {
+            "Columns": [
+               {
+                  "Name": "VersionID",
+                  "NewName": "VersionId"
+               },
+               {
+                  "Name": "StartDT",
+                  "NewName": "StartDt"
+               },
+               {
+                  "Name": "EndDT",
+                  "NewName": "EndDt"
+               },
+               {
+                  "Name": "CreateDT",
+                  "NewName": "CreateDt"
+               },
+               {
+                  "Name": "StartDt",
+                  "NewName": "StartDt"
+               }
+            ],
+            "Name": "AddFoodDesc",
+            "NewName": "AddFoodDesc"
+         },
+         {
+            "Columns": [
+               {
+                  "Name": "VersionID",
+                  "NewName": "VersionId"
+               },
+               {
+                  "Name": "CreateDT",
+                  "NewName": "CreateDt"
+               }
+            ],
+            "Name": "DerivDesc",
+            "NewName": "DerivDesc"
+         },
+         {
+            "Columns": [
+               {
+                  "Name": "VersionID",
+                  "NewName": "VersionId"
+               },
+               {
+                  "Name": "StartDT",
+                  "NewName": "StartDt"
+               },
+               {
+                  "Name": "EndDT",
+                  "NewName": "EndDt"
+               },
+               {
+                  "Name": "CreateDT",
+                  "NewName": "CreateDt"
+               }
+            ],
+            "Name": "FnddsIngred",
+            "NewName": "FnddsIngred"
+         },
+         {
+            "Columns": [
+               {
+                  "Name": "VersionID",
+                  "NewName": "VersionId"
+               },
+               {
+                  "Name": "CreateDT",
+                  "NewName": "CreateDt"
+               }
+            ],
+            "Name": "FnddsIngredEquiv",
+            "NewName": "FnddsIngredEquiv"
+         },
+         {
+            "Columns": [
+               {
+                  "Name": "VersionID",
+                  "NewName": "VersionId"
+               },
+               {
+                  "Name": "StartDT",
+                  "NewName": "StartDt"
+               },
+               {
+                  "Name": "EndDT",
+                  "NewName": "EndDt"
+               },
+               {
+                  "Name": "CreateDT",
+                  "NewName": "CreateDt"
+               }
+            ],
+            "Name": "FnddsNutVal",
+            "NewName": "FnddsNutVal"
+         },
+         {
+            "Columns": [
+               {
+                  "Name": "ID",
+                  "NewName": "Id"
+               },
+               {
+                  "Name": "CreateDT",
+                  "NewName": "CreateDt"
+               }
+            ],
+            "Name": "FnddsVersion",
+            "NewName": "FnddsVersion"
+         },
+         {
+            "Columns": [
+               {
+                  "Name": "VersionID",
+                  "NewName": "VersionId"
+               },
+               {
+                  "Name": "CreateDT",
+                  "NewName": "CreateDt"
+               }
+            ],
+            "Name": "FoodEquiv",
+            "NewName": "FoodEquiv"
+         },
+         {
+            "Columns": [
+               {
+                  "Name": "VersionID",
+                  "NewName": "VersionId"
+               },
+               {
+                  "Name": "StartDT",
+                  "NewName": "StartDt"
+               },
+               {
+                  "Name": "EndDT",
+                  "NewName": "EndDt"
+               },
+               {
+                  "Name": "CreateDT",
+                  "NewName": "CreateDt"
+               }
+            ],
+            "Name": "FoodPortionDesc",
+            "NewName": "FoodPortionDesc"
+         },
+         {
+            "Columns": [
+               {
+                  "Name": "VersionID",
+                  "NewName": "VersionId"
+               },
+               {
+                  "Name": "StartDT",
+                  "NewName": "StartDt"
+               },
+               {
+                  "Name": "EndDT",
+                  "NewName": "EndDt"
+               },
+               {
+                  "Name": "CreateDT",
+                  "NewName": "CreateDt"
+               }
+            ],
+            "Name": "FoodWeight",
+            "NewName": "FoodWeight"
+         },
+         {
+            "Columns": [
+               {
+                  "Name": "VersionID",
+                  "NewName": "VersionId"
+               },
+               {
+                  "Name": "CreateDT",
+                  "NewName": "CreateDt"
+               }
+            ],
+            "Name": "IngredEquiv",
+            "NewName": "IngredEquiv"
+         },
+         {
+            "Columns": [
+               {
+                  "Name": "VersionID",
+                  "NewName": "VersionId"
+               },
+               {
+                  "Name": "StartDT",
+                  "NewName": "StartDt"
+               },
+               {
+                  "Name": "EndDT",
+                  "NewName": "EndDt"
+               },
+               {
+                  "Name": "FdcID",
+                  "NewName": "FdcId"
+               },
+               {
+                  "Name": "CreateDT",
+                  "NewName": "CreateDt"
+               }
+            ],
+            "Name": "IngredNutVal",
+            "NewName": "IngredNutVal"
+         },
+         {
+            "Columns": [
+               {
+                  "Name": "VersionID",
+                  "NewName": "VersionId"
+               },
+               {
+                  "Name": "StartDT",
+                  "NewName": "StartDt"
+               },
+               {
+                  "Name": "EndDT",
+                  "NewName": "EndDt"
+               },
+               {
+                  "Name": "CreateDT",
+                  "NewName": "CreateDt"
+               }
+            ],
+            "Name": "MainFoodDesc",
+            "NewName": "MainFoodDesc"
+         },
+         {
+            "Columns": [
+               {
+                  "Name": "VersionID",
+                  "NewName": "VersionId"
+               },
+               {
+                  "Name": "StartDT",
+                  "NewName": "StartDt"
+               },
+               {
+                  "Name": "EndDT",
+                  "NewName": "EndDt"
+               },
+               {
+                  "Name": "CreateDT",
+                  "NewName": "CreateDt"
+               }
+            ],
+            "Name": "ModDesc",
+            "NewName": "ModDesc"
+         },
+         {
+            "Columns": [
+               {
+                  "Name": "VersionID",
+                  "NewName": "VersionId"
+               },
+               {
+                  "Name": "CreateDT",
+                  "NewName": "CreateDt"
+               }
+            ],
+            "Name": "ModEquiv",
+            "NewName": "ModEquiv"
+         },
+         {
+            "Columns": [
+               {
+                  "Name": "VersionID",
+                  "NewName": "VersionId"
+               },
+               {
+                  "Name": "StartDT",
+                  "NewName": "StartDt"
+               },
+               {
+                  "Name": "EndDT",
+                  "NewName": "EndDt"
+               },
+               {
+                  "Name": "CreateDT",
+                  "NewName": "CreateDt"
+               }
+            ],
+            "Name": "ModNutVal",
+            "NewName": "ModNutVal"
+         },
+         {
+            "Columns": [
+               {
+                  "Name": "VersionID",
+                  "NewName": "VersionId"
+               },
+               {
+                  "Name": "StartDT",
+                  "NewName": "StartDt"
+               },
+               {
+                  "Name": "EndDT",
+                  "NewName": "EndDt"
+               },
+               {
+                  "Name": "CreateDT",
+                  "NewName": "CreateDt"
+               }
+            ],
+            "Name": "MoistNFatAdjust",
+            "NewName": "MoistNFatAdjust"
+         },
+         {
+            "Columns": [
+               {
+                  "Name": "VersionID",
+                  "NewName": "VersionId"
+               },
+               {
+                  "Name": "CreateDT",
+                  "NewName": "CreateDt"
+               }
+            ],
+            "Name": "NutDesc",
+            "NewName": "NutDesc"
+         },
+         {
+            "Columns": [
+               {
+                  "Name": "VersionID",
+                  "NewName": "VersionId"
+               },
+               {
+                  "Name": "StartDT",
+                  "NewName": "StartDt"
+               },
+               {
+                  "Name": "EndDT",
+                  "NewName": "EndDt"
+               },
+               {
+                  "Name": "CreateDT",
+                  "NewName": "CreateDt"
+               }
+            ],
+            "Name": "SubcodeDesc",
+            "NewName": "SubcodeDesc"
+         }
+      ],
+      "UseSchemaName": false
+   }
+]

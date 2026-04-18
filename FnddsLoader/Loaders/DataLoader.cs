@@ -1,12 +1,12 @@
-﻿using System.Data.OleDb;
-using Fndds.Interfaces;
-using Fndds.Services;
-using FnddsLoader.Data;
-using FnddsLoader.Data.Models;
+using System.Data.OleDb;
+using FnddsData.Fndds.Interfaces;
+using FnddsData.Fndds.Services;
+using FnddsData.FnddsLoader.Contexts;
+using FnddsData.FnddsLoader.Entities;
 
-namespace FnddsLoader.Loaders;
+namespace FnddsData.FnddsLoader.Loaders;
 
-public abstract class DataLoader : BaseDataLoader
+public abstract class DataLoader : DataLoaderBase
 {
     /// <summary>
     /// Constructs a new DataLoader object.
@@ -14,7 +14,7 @@ public abstract class DataLoader : BaseDataLoader
     /// <param name="version">The FNDDS version.</param>
     /// <param name="connection">The connection to the source database.</param>
     /// <param name="context">The destination database context.</param>
-    protected DataLoader(FnddsVersion version, OleDbConnection connection, FnddsContext context)
+    protected DataLoader(FnddsVersion version, OleDbConnection connection, FnddsDbContext context)
     {
         FnddsVersion = version;
         Connection = connection;
@@ -29,7 +29,7 @@ public abstract class DataLoader : BaseDataLoader
     /// <summary>
     /// The destination database context.
     /// </summary>
-    public FnddsContext Context { get; }
+    public FnddsDbContext Context { get; }
 
     /// <summary>
     /// The FNDDS version.

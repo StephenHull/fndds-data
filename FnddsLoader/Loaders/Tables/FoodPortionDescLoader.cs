@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
 using System.Data.OleDb;
-using System.Threading.Tasks;
-using Fndds.Models;
-using FnddsLoader.Data;
-using FnddsLoader.Data.Models;
+using FnddsData.Fndds.Models;
+using FnddsData.FnddsLoader.Contexts;
+using FnddsData.FnddsLoader.Entities;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 
-namespace FnddsLoader.Loaders.Tables;
+namespace FnddsData.FnddsLoader.Loaders.Tables;
 
 /// <summary>
 /// This class contains functionaility for loading data for the food portion
@@ -38,7 +35,7 @@ public class FoodPortionDescLoader : DataLoader
     /// <param name="version">The FNDDS version.</param>
     /// <param name="connection">The connection to the source database.</param>
     /// <param name="context">The destination database context.</param>
-    public FoodPortionDescLoader(FnddsVersion version, OleDbConnection connection, FnddsContext context)
+    public FoodPortionDescLoader(FnddsVersion version, OleDbConnection connection, FnddsDbContext context)
         : base(version, connection, context)
     {
         _isDebugEnabled = _logger.IsEnabled(LogLevel.Debug);
@@ -46,40 +43,54 @@ public class FoodPortionDescLoader : DataLoader
 
     /// <inheritdoc />
     public override IEnumerable<DataColumnModel> Columns =>
-        new List<DataColumnModel>
-        {
+        [
             new DataColumnModel
             {
                 SourceName = "[Portion code]",
                 DestinationName = "PortionCode",
                 IsOrderedBy = true,
-                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 }
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[Start date]",
-                DestinationName = "StartDate",
-                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 }
+                DestinationName = "StartDt",
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[End date]",
-                DestinationName = "EndDate",
-                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 }
+                DestinationName = "EndDt",
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[Portion description]",
                 DestinationName = "PortionDescription",
-                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 }
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[Change type]",
                 DestinationName = "ChangeType",
-                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32 }
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32,
+                ],
             },
-        };
+        ];
 
     /// <inheritdoc />
     public override string TableName => SourceTableName;
@@ -87,46 +98,56 @@ public class FoodPortionDescLoader : DataLoader
     /// <inheritdoc />
     public override async Task<int> CreateRecordsAsync(IEnumerable<DataColumnModel> columns, OleDbDataReader reader)
     {
-        var portions = new List<FoodPortionDesc>();
-
-        var recordCount = 0;
-        while (reader.Read())
+        try
         {
-            var portion = new FoodPortionDesc
+            var entities = new List<FoodPortionDesc>();
+
+            var recordCount = 0;
+
+            while (reader.Read())
             {
-                Version = FnddsVersion.Id,
-                Created = DateTime.Now
-            };
+                var entity = new FoodPortionDesc
+                {
+                    VersionId = FnddsVersion.Id,
+                    CreateDt = DateTime.UtcNow
+                };
 
-            SetModelValues(columns, reader, portion);
+                SetModelValues(columns, reader, entity);
 
-            portions.Add(portion);
+                entities.Add(entity);
 
-            if (_isDebugEnabled)
-            {
-                _logger.LogDebug("Table: {tableName}, Portion code: {portionCode}", SourceTableName,
-                    portion.PortionCode);
+                if (_isDebugEnabled)
+                {
+                    _logger.LogDebug("Table: {tableName}, Portion code: {portionCode}", SourceTableName,
+                        entity.PortionCode);
+                }
+
+                if (entities.Count > BatchSize)
+                {
+                    Context.FoodPortionDescs.AddRange(entities);
+
+                    await Context.SaveChangesAsync();
+
+                    entities.Clear();
+                }
+
+                recordCount++;
             }
 
-            if (portions.Count > BatchSize)
+            if (entities.Count > 0)
             {
-                Context.FoodPortionDesc.AddRange(portions);
+                Context.FoodPortionDescs.AddRange(entities);
 
                 await Context.SaveChangesAsync();
-
-                portions.Clear();
             }
 
-            recordCount++;
+            return recordCount;
         }
-
-        if (portions.Count > 0)
+        catch (Exception e)
         {
-            Context.FoodPortionDesc.AddRange(portions);
+            _logger.LogError(e, "Failed to create the records for table {tableName}.", TableName);
 
-            await Context.SaveChangesAsync();
+            throw;
         }
-
-        return recordCount;
     }
 }

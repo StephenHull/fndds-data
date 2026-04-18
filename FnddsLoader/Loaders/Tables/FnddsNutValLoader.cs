@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
 using System.Data.OleDb;
-using System.Threading.Tasks;
-using Fndds.Models;
-using FnddsLoader.Data;
-using FnddsLoader.Data.Models;
+using FnddsData.Fndds.Models;
+using FnddsData.FnddsLoader.Contexts;
+using FnddsData.FnddsLoader.Entities;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 
-namespace FnddsLoader.Loaders.Tables;
+namespace FnddsData.FnddsLoader.Loaders.Tables;
 
 /// <summary>
 /// This class contains functionaility for loading data for the FNDDS nutrient
@@ -38,7 +35,7 @@ public class FnddsNutValLoader : DataLoader
     /// <param name="version">The FNDDS version.</param>
     /// <param name="connection">The connection to the source database.</param>
     /// <param name="context">The destination database context.</param>
-    public FnddsNutValLoader(FnddsVersion version, OleDbConnection connection, FnddsContext context)
+    public FnddsNutValLoader(FnddsVersion version, OleDbConnection connection, FnddsDbContext context)
         : base(version, connection, context)
     {
         _isDebugEnabled = _logger.IsEnabled(LogLevel.Debug);
@@ -46,41 +43,55 @@ public class FnddsNutValLoader : DataLoader
 
     /// <inheritdoc />
     public override IEnumerable<DataColumnModel> Columns =>
-        new List<DataColumnModel>
-        {
+        [
             new DataColumnModel
             {
                 SourceName = "[Food code]",
                 DestinationName = "FoodCode",
                 IsOrderedBy = true,
-                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 }
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[Nutrient code]",
                 DestinationName = "NutrientCode",
                 IsOrderedBy = true,
-                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 }
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[Start date]",
-                DestinationName = "StartDate",
-                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 }
+                DestinationName = "StartDt",
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[End date]",
-                DestinationName = "EndDate",
-                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 }
+                DestinationName = "EndDt",
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                ],
             },
             new DataColumnModel
             {
                 SourceName = "[Nutrient value]",
                 DestinationName = "NutrientValue",
-                Versions = new HashSet<int> { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 }
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                ],
             },
-        };
+        ];
 
     /// <inheritdoc />
     public override string TableName => SourceTableName;
@@ -88,46 +99,56 @@ public class FnddsNutValLoader : DataLoader
     /// <inheritdoc />
     public override async Task<int> CreateRecordsAsync(IEnumerable<DataColumnModel> columns, OleDbDataReader reader)
     {
-        var nutrients = new List<FnddsNutVal>();
-
-        var recordCount = 0;
-        while (reader.Read())
+        try
         {
-            var nutrient = new FnddsNutVal
+            var entities = new List<FnddsNutVal>();
+
+            var recordCount = 0;
+
+            while (reader.Read())
             {
-                Version = FnddsVersion.Id,
-                Created = DateTime.Now
-            };
+                var entity = new FnddsNutVal
+                {
+                    VersionId = FnddsVersion.Id,
+                    CreateDt = DateTime.UtcNow
+                };
 
-            SetModelValues(columns, reader, nutrient);
+                SetModelValues(columns, reader, entity);
 
-            nutrients.Add(nutrient);
+                entities.Add(entity);
 
-            if (_isDebugEnabled)
-            {
-                _logger.LogDebug("Table: {tableName}, Food code: {foodCode}, Nutrient code: {nutrientCode}",
-                    SourceTableName, nutrient.FoodCode, nutrient.NutrientCode);
+                if (_isDebugEnabled)
+                {
+                    _logger.LogDebug("Table: {tableName}, Food code: {foodCode}, Nutrient code: {nutrientCode}",
+                        SourceTableName, entity.FoodCode, entity.NutrientCode);
+                }
+
+                if (entities.Count > BatchSize)
+                {
+                    Context.FnddsNutVals.AddRange(entities);
+
+                    await Context.SaveChangesAsync();
+
+                    entities.Clear();
+                }
+
+                recordCount++;
             }
 
-            if (nutrients.Count > BatchSize)
+            if (entities.Count > 0)
             {
-                Context.FnddsNutVal.AddRange(nutrients);
+                Context.FnddsNutVals.AddRange(entities);
 
                 await Context.SaveChangesAsync();
-
-                nutrients.Clear();
             }
 
-            recordCount++;
+            return recordCount;
         }
-
-        if (nutrients.Count > 0)
+        catch (Exception e)
         {
-            Context.FnddsNutVal.AddRange(nutrients);
+            _logger.LogError(e, "Failed to create the records for table {tableName}.", TableName);
 
-            await Context.SaveChangesAsync();
+            throw;
         }
-
-        return recordCount;
     }
 }

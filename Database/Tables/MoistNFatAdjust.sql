@@ -1,12 +1,18 @@
 ﻿CREATE TABLE [dbo].[MoistNFatAdjust]
 (
-	FoodCode INT,
-	[Version] INT,
-	StartDate DATETIME NOT NULL,
-	EndDate DATETIME NOT NULL,
-	MoistureChange DECIMAL(5,1) NULL,
-	FatChange DECIMAL(5,1) NULL,
-	TypeOfFat INT NULL,
-	Created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	CONSTRAINT PK_MoistNFatAdjust PRIMARY KEY (FoodCode, [Version])
+    FoodCode INT,
+    VersionID INT,
+    StartDT DATETIME2 NULL,
+    EndDT DATETIME2 NULL,
+    MoistureChange DECIMAL(5, 1) NULL,
+    FatChange DECIMAL(5, 1) NULL,
+    TypeOfFat INT NULL,
+    CreateDT DATETIME2
+        DEFAULT GETUTCDATE() NOT NULL,
+    CONSTRAINT PK_MoistNFatAdjust
+        PRIMARY KEY
+        (
+            FoodCode,
+            VersionID
+        )
 )
