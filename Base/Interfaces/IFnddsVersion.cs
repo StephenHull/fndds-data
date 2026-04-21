@@ -1,4 +1,4 @@
-namespace FnddsData.Fndds.Interfaces;
+namespace FoodAndNutrientData.Base.Interfaces;
 
 public interface IFnddsVersion
 {

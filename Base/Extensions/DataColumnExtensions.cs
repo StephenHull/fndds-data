@@ -1,7 +1,7 @@
 using System.Text;
-using FnddsData.Fndds.Models;
+using FoodAndNutrientData.Base.Models;
 
-namespace FnddsData.Fndds.Extensions;
+namespace FoodAndNutrientData.Base.Extensions;
 
 /// <summary>
 /// This class contains utility methods for building SQL statements.

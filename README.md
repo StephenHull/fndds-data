@@ -1,4 +1,4 @@
-# FNDDS
+# Food and Nutrient Data
 A utility to create and populate a SQL Server database with the Food and Nutrient Database for Dietary Studies (FNDDS) data from the United States Department of Agriculture (USDA) / Agricultural Research Service (ARS) / Food Surveys Research Group (FSRG).
 
 You can download the FNDDS data [here](https://www.ars.usda.gov/northeast-area/beltsville-md-bhnrc/beltsville-human-nutrition-research-center/food-surveys-research-group/docs/main-service-page) as MS Access database files.

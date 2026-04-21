@@ -1,4 +1,4 @@
-namespace FnddsData.Fndds.Models;
+namespace FoodAndNutrientData.Base.Models;
 
 /// <summary>
 /// This class represents a column in a database.

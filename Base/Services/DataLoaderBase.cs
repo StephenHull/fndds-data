@@ -1,11 +1,11 @@
 using System.Data.OleDb;
-using FnddsData.Fndds.Extensions;
-using FnddsData.Fndds.Interfaces;
-using FnddsData.Fndds.Models;
+using FoodAndNutrientData.Base.Extensions;
+using FoodAndNutrientData.Base.Interfaces;
+using FoodAndNutrientData.Base.Models;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 
-namespace FnddsData.Fndds.Services;
+namespace FoodAndNutrientData.Base.Services;
 
 /// <summary>
 /// The class contains functionality for loading data from the source database into
