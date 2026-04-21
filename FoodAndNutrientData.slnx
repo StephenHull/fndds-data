@@ -1,14 +1,14 @@
 <Solution>
-  <Folder Name="/FoodAndNutrientData/">
+  <Folder Name="/SolutionItems/">
     <File Path=".editorconfig" />
     <File Path=".gitignore" />
     <File Path="LICENSE" />
     <File Path="README.md" />
   </Folder>
+  <Project Path="Base/Base.csproj" Id="8d82d705-6cd3-443e-948a-52b27f3e275d" />
   <Project Path="Database/Database.sqlproj" Id="cbcd95e2-cbc6-4c22-9aca-3c86e1737635">
     <Build />
     <Deploy />
   </Project>
-  <Project Path="Base/Base.csproj" Id="8d82d705-6cd3-443e-948a-52b27f3e275d" />
-  <Project Path="FnddsImporter/FnddsImporter.csproj" />
+  <Project Path="Importer/Importer.csproj" />
 </Solution>
