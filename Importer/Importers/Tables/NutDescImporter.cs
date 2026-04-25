@@ -5,24 +5,23 @@ using FoodAndNutrientData.Importer.Entities;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 
-namespace FoodAndNutrientData.Importer.Loaders.Tables;
+namespace FoodAndNutrientData.Importer.Importers.Tables;
 
 /// <summary>
-/// This class contains functionaility for loading data for the main food
-/// description table.
+/// This class contains functionaility for importing data for the nutrient description
+/// table.
 /// </summary>
-public class MainFoodDescLoader : DataLoader
+public class NutDescImporter : DataImporter
 {
     /// <summary>
     /// The table name in the source database.
     /// </summary>
-    private const string SourceTableName = "MainFoodDesc";
+    private const string SourceTableName = "NutDesc";
 
     /// <summary>
     /// The logger class.
     /// </summary>
-    private static readonly ILogger<MainFoodDescLoader> _logger =
-        new NLogLoggerFactory().CreateLogger<MainFoodDescLoader>();
+    private static readonly ILogger<NutDescImporter> _logger = new NLogLoggerFactory().CreateLogger<NutDescImporter>();
 
     /// <summary>
     /// True if the logger is debug endabled; otherwise, false.
@@ -30,12 +29,12 @@ public class MainFoodDescLoader : DataLoader
     private readonly bool _isDebugEnabled = false;
 
     /// <summary>
-    /// Constructs a new MainFoodDescLoader object.
+    /// Constructs a new NutDescImporter object.
     /// </summary>
     /// <param name="version">The FNDDS version.</param>
     /// <param name="connection">The connection to the source database.</param>
     /// <param name="context">The destination database context.</param>
-    public MainFoodDescLoader(FnddsVersion version, OleDbConnection connection, FnddsDbContext context)
+    public NutDescImporter(FnddsVersion version, OleDbConnection connection, FnddsDbContext context)
         : base(version, connection, context)
     {
         _isDebugEnabled = _logger.IsEnabled(LogLevel.Debug);
@@ -46,8 +45,8 @@ public class MainFoodDescLoader : DataLoader
         [
             new DataColumnModel
             {
-                SourceName = "[Food code]",
-                DestinationName = "FoodCode",
+                SourceName = "[Nutrient code]",
+                DestinationName = "NutrientCode",
                 IsOrderedBy = true,
                 Versions =
                 [
@@ -56,8 +55,8 @@ public class MainFoodDescLoader : DataLoader
             },
             new DataColumnModel
             {
-                SourceName = "[Start date]",
-                DestinationName = "StartDt",
+                SourceName = "[Nutrient description]",
+                DestinationName = "NutrientDescription",
                 Versions =
                 [
                     1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
@@ -65,8 +64,8 @@ public class MainFoodDescLoader : DataLoader
             },
             new DataColumnModel
             {
-                SourceName = "[End date]",
-                DestinationName = "EndDt",
+                SourceName = "Tagname",
+                DestinationName = "Tagname",
                 Versions =
                 [
                     1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
@@ -74,8 +73,8 @@ public class MainFoodDescLoader : DataLoader
             },
             new DataColumnModel
             {
-                SourceName = "[Main food description]",
-                DestinationName = "MainFoodDescription",
+                SourceName = "Unit",
+                DestinationName = "Unit",
                 Versions =
                 [
                     1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
@@ -83,56 +82,11 @@ public class MainFoodDescLoader : DataLoader
             },
             new DataColumnModel
             {
-                SourceName = "[Abbreviated description]",
-                DestinationName = "AbbreviatedMainFoodDescription",
+                SourceName = "Decimals",
+                DestinationName = "Decimals",
                 Versions =
                 [
-                    1, 2, 4,
-                ],
-            },
-            new DataColumnModel
-            {
-                SourceName = "[Fortification identifier]",
-                DestinationName = "FortificationIdentifier",
-                Versions =
-                [
-                    32,
-                ],
-            },
-            new DataColumnModel
-            {
-                SourceName = "[Fortification identifier code]",
-                DestinationName = "FortificationIdentifier",
-                Versions =
-                [
-                    128,
-                ],
-            },
-            new DataColumnModel
-            {
-                SourceName = "[WWEIA Category code]",
-                DestinationName = "CategoryNumber",
-                Versions =
-                [
-                    128,
-                ],
-            },
-            new DataColumnModel
-            {
-                SourceName = "[WWEIA Category number]",
-                DestinationName = "CategoryNumber",
-                Versions =
-                [
-                    256, 512, 1024,
-                ],
-            },
-            new DataColumnModel
-            {
-                SourceName = "[WWEIA Category description]",
-                DestinationName = "CategoryDescription",
-                Versions =
-                [
-                    128, 256, 512, 1024,
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
                 ],
             },
         ];
@@ -145,13 +99,13 @@ public class MainFoodDescLoader : DataLoader
     {
         try
         {
-            var entities = new List<MainFoodDesc>();
+            var entities = new List<NutDesc>();
 
             var recordCount = 0;
 
             while (reader.Read())
             {
-                var entity = new MainFoodDesc
+                var entity = new NutDesc
                 {
                     VersionId = FnddsVersion.Id,
                     CreateDt = DateTime.UtcNow
@@ -163,12 +117,13 @@ public class MainFoodDescLoader : DataLoader
 
                 if (_isDebugEnabled)
                 {
-                    _logger.LogDebug("Table: {tableName}, Food code: {foodCode}", SourceTableName, entity.FoodCode);
+                    _logger.LogDebug("Table: {tableName}, Nutrient code: {nutrientCode}", SourceTableName,
+                        entity.NutrientCode);
                 }
 
                 if (entities.Count > BatchSize)
                 {
-                    Context.MainFoodDescs.AddRange(entities);
+                    Context.NutDescs.AddRange(entities);
 
                     await Context.SaveChangesAsync();
 
@@ -178,12 +133,9 @@ public class MainFoodDescLoader : DataLoader
                 recordCount++;
             }
 
-            if (entities.Count > 0)
-            {
-                Context.MainFoodDescs.AddRange(entities);
+            Context.NutDescs.AddRange(entities);
 
-                await Context.SaveChangesAsync();
-            }
+            await Context.SaveChangesAsync();
 
             return recordCount;
         }

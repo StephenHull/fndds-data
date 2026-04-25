@@ -8,18 +8,19 @@ using NLog.Extensions.Logging;
 namespace FoodAndNutrientData.Base.Services;
 
 /// <summary>
-/// The class contains functionality for loading data from the source database into
+/// The class contains functionality for importing data from the source database into
 /// a destination database table.
 /// </summary>
-public abstract class DataLoaderBase
+public abstract class DataImporterBase
 {
     /// <summary>
     /// The logger class.
     /// </summary>
-    private static readonly ILogger<DataLoaderBase> _logger = new NLogLoggerFactory().CreateLogger<DataLoaderBase>();
+    private static readonly ILogger<DataImporterBase> _logger =
+        new NLogLoggerFactory().CreateLogger<DataImporterBase>();
 
     /// <summary>
-    /// The default batch size for the data loader.
+    /// The default batch size for the data importer.
     /// </summary>
     public const int BatchSize = 10_000; // TODO Make this configurable
 
@@ -53,10 +54,10 @@ public abstract class DataLoaderBase
     public abstract string TableName { get; }
 
     /// <summary>
-    /// Load the data from the source database into the destination database.
+    /// Import the data from the source database into the destination database.
     /// </summary>
     /// <returns>The number of records created.</returns>
-    public async Task<int> LoadAsync()
+    public async Task<int> ImportAsync()
     {
         try
         {
@@ -104,11 +105,11 @@ public abstract class DataLoaderBase
     }
 
     /// <summary>
-    /// Perform any task(s) needed to prepare to load the data from the source database 
-    /// into the destination database.
+    /// Perform any task(s) needed to prepare to import the data from the source
+    /// database into the destination database.
     /// </summary>
     /// <returns>A value indicating whether or not the tasks were successful.</returns>
-    public virtual Task<bool> PrepareToLoadAsync()
+    public virtual Task<bool> PrepareToImportAsync()
     {
         // Nothing to do
         return Task.FromResult(true);
@@ -152,7 +153,8 @@ public abstract class DataLoaderBase
                     {
                         if (DateTime.TryParse(value.ToString(), out var dateTimeValue) == false)
                         {
-                            throw new Exception($"Unable to parse date/time value {value} for column {column.SourceName}.");
+                            throw new Exception($"Unable to parse date/time value {value} for column " +
+                                $"{column.SourceName}.");
                         }
 
                         property.SetValue(model, dateTimeValue);
@@ -161,7 +163,8 @@ public abstract class DataLoaderBase
                     {
                         if (decimal.TryParse(value.ToString(), out var decimalValue) == false)
                         {
-                            throw new Exception($"Unable to parse decimal value {value} for column {column.SourceName}.");
+                            throw new Exception($"Unable to parse decimal value {value} for column " +
+                                $"{column.SourceName}.");
                         }
 
                         property.SetValue(model, decimalValue);

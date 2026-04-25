@@ -5,24 +5,24 @@ using FoodAndNutrientData.Importer.Entities;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 
-namespace FoodAndNutrientData.Importer.Loaders.Tables;
+namespace FoodAndNutrientData.Importer.Importers.Tables;
 
 /// <summary>
-/// This class contains functionaility for loading data for the additional food
-/// description table.
+/// This class contains functionaility for importing data for the FNDDS nutrient values
+/// table.
 /// </summary>
-public class AddFoodDescLoader : DataLoader
+public class FnddsNutValImporter : DataImporter
 {
     /// <summary>
     /// The table name in the source database.
     /// </summary>
-    private const string SourceTableName = "AddFoodDesc";
+    private const string SourceTableName = "FnddsNutVal";
 
     /// <summary>
     /// The logger class.
     /// </summary>
-    private static readonly ILogger<AddFoodDescLoader> _logger =
-        new NLogLoggerFactory().CreateLogger<AddFoodDescLoader>();
+    private static readonly ILogger<FnddsNutValImporter> _logger =
+        new NLogLoggerFactory().CreateLogger<FnddsNutValImporter>();
 
     /// <summary>
     /// True if the logger is debug endabled; otherwise, false.
@@ -30,12 +30,12 @@ public class AddFoodDescLoader : DataLoader
     private readonly bool _isDebugEnabled = false;
 
     /// <summary>
-    /// Constructs a new AddFoodDescLoader object.
+    /// Constructs a new FnddsNutValImporter object.
     /// </summary>
     /// <param name="version">The FNDDS version.</param>
     /// <param name="connection">The connection to the source database.</param>
     /// <param name="context">The destination database context.</param>
-    public AddFoodDescLoader(FnddsVersion version, OleDbConnection connection, FnddsDbContext context)
+    public FnddsNutValImporter(FnddsVersion version, OleDbConnection connection, FnddsDbContext context)
         : base(version, connection, context)
     {
         _isDebugEnabled = _logger.IsEnabled(LogLevel.Debug);
@@ -56,8 +56,8 @@ public class AddFoodDescLoader : DataLoader
             },
             new DataColumnModel
             {
-                SourceName = "[Seq num]",
-                DestinationName = "SeqNum",
+                SourceName = "[Nutrient code]",
+                DestinationName = "NutrientCode",
                 IsOrderedBy = true,
                 Versions =
                 [
@@ -84,8 +84,8 @@ public class AddFoodDescLoader : DataLoader
             },
             new DataColumnModel
             {
-                SourceName = "[Additional food description]",
-                DestinationName = "AdditionalFoodDescription",
+                SourceName = "[Nutrient value]",
+                DestinationName = "NutrientValue",
                 Versions =
                 [
                     1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
@@ -101,13 +101,13 @@ public class AddFoodDescLoader : DataLoader
     {
         try
         {
-            var entities = new List<AddFoodDesc>();
+            var entities = new List<FnddsNutVal>();
 
             var recordCount = 0;
 
             while (reader.Read())
             {
-                var entity = new AddFoodDesc
+                var entity = new FnddsNutVal
                 {
                     VersionId = FnddsVersion.Id,
                     CreateDt = DateTime.UtcNow
@@ -119,13 +119,13 @@ public class AddFoodDescLoader : DataLoader
 
                 if (_isDebugEnabled)
                 {
-                    _logger.LogDebug("Table: {tableName}, Food code: {foodCode}, Sequence: {sequenceNumber}",
-                        SourceTableName, entity.FoodCode, entity.SeqNum);
+                    _logger.LogDebug("Table: {tableName}, Food code: {foodCode}, Nutrient code: {nutrientCode}",
+                        SourceTableName, entity.FoodCode, entity.NutrientCode);
                 }
 
                 if (entities.Count > BatchSize)
                 {
-                    Context.AddFoodDescs.AddRange(entities);
+                    Context.FnddsNutVals.AddRange(entities);
 
                     await Context.SaveChangesAsync();
 
@@ -137,7 +137,7 @@ public class AddFoodDescLoader : DataLoader
 
             if (entities.Count > 0)
             {
-                Context.AddFoodDescs.AddRange(entities);
+                Context.FnddsNutVals.AddRange(entities);
 
                 await Context.SaveChangesAsync();
             }

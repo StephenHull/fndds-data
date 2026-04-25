@@ -2,19 +2,19 @@ using System.Data.OleDb;
 using FoodAndNutrientData.Base.Interfaces;
 using FoodAndNutrientData.Importer.Contexts;
 using FoodAndNutrientData.Importer.Entities;
-using FoodAndNutrientData.Importer.Loaders;
-using FoodAndNutrientData.Importer.Loaders.Tables;
+using FoodAndNutrientData.Importer.Importers;
+using FoodAndNutrientData.Importer.Importers.Tables;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 
 namespace FoodAndNutrientData.Importer;
 
-public class FnddsImporter
+public class Importer
 {
     /// <summary>
     /// The logger class.
     /// </summary>
-    private static readonly ILogger<FnddsImporter> _logger = new NLogLoggerFactory().CreateLogger<FnddsImporter>();
+    private static readonly ILogger<Importer> _logger = new NLogLoggerFactory().CreateLogger<Importer>();
 
     private readonly FnddsDbContext _dbContext;
 
@@ -24,9 +24,9 @@ public class FnddsImporter
     private readonly bool _isDebugEnabled = false;
 
     /// <summary>
-    /// Constructs a new FNDDS loader.
+    /// Constructs a new FNDDS importer.
     /// </summary>
-    public FnddsImporter(FnddsDbContext dbContext)
+    public Importer(FnddsDbContext dbContext)
     {
         _dbContext = dbContext;
         _isDebugEnabled = _logger.IsEnabled(LogLevel.Debug);
@@ -71,35 +71,35 @@ public class FnddsImporter
             {
                 await connection.OpenAsync();
 
-                var loaders =
-                    new List<DataLoader>
+                var importers =
+                    new List<DataImporter>
                     {
-                        new DerivDescLoader(version, connection, _dbContext),
-                        new FoodPortionDescLoader(version, connection, _dbContext),
-                        new MainFoodDescLoader(version, connection, _dbContext),
-                        new NutDescLoader(version, connection, _dbContext),
-                        new SubcodeDescLoader(version, connection, _dbContext),
+                        new DerivDescImporter(version, connection, _dbContext),
+                        new FoodPortionDescImporter(version, connection, _dbContext),
+                        new MainFoodDescImporter(version, connection, _dbContext),
+                        new NutDescImporter(version, connection, _dbContext),
+                        new SubcodeDescImporter(version, connection, _dbContext),
 
-                        new AddFoodDescLoader(version, connection, _dbContext),
-                        new FnddsIngredLoader(version, connection, _dbContext),
-                        new FnddsNutValLoader(version, connection, _dbContext),
-                        new FoodWeightLoader(version, connection, _dbContext),
-                        new IngredNutValLoader(version, connection, _dbContext),
-                        new ModDescLoader(version, connection, _dbContext),
-                        new MoistNFatAdjustLoader(version, connection, _dbContext),
+                        new AddFoodDescImporter(version, connection, _dbContext),
+                        new FnddsIngredImporter(version, connection, _dbContext),
+                        new FnddsNutValImporter(version, connection, _dbContext),
+                        new FoodWeightImporter(version, connection, _dbContext),
+                        new IngredNutValImporter(version, connection, _dbContext),
+                        new ModDescImporter(version, connection, _dbContext),
+                        new MoistNFatAdjustImporter(version, connection, _dbContext),
 
-                        new ModNutValLoader(version, connection, _dbContext),
+                        new ModNutValImporter(version, connection, _dbContext),
                     };
 
-                foreach (var loader in loaders)
+                foreach (var importer in importers)
                 {
-                    await loader.PrepareToLoadAsync();
+                    await importer.PrepareToImportAsync();
 
-                    var recordsLoaded = await loader.LoadAsync();
+                    var recordsImported = await importer.ImportAsync();
 
                     if (_isDebugEnabled)
                     {
-                        _logger.LogDebug("Table: {tableName}, Records: {recordCount}", loader.TableName, recordsLoaded);
+                        _logger.LogDebug("Table: {tableName}, Records: {recordCount}", importer.TableName, recordsImported);
                     }
                 }
             }
@@ -110,22 +110,22 @@ public class FnddsImporter
                 {
                     await connection.OpenAsync();
 
-                    var loaders =
-                        new List<DataLoader>
+                    var importers =
+                        new List<DataImporter>
                         {
-                            new FoodEquivLoader(version, connection, _dbContext),
+                            new FoodEquivImporter(version, connection, _dbContext),
                         };
 
-                    foreach (var loader in loaders)
+                    foreach (var importer in importers)
                     {
-                        await loader.PrepareToLoadAsync();
+                        await importer.PrepareToImportAsync();
 
-                        var recordsLoaded = await loader.LoadAsync();
+                        var recordsImported = await importer.ImportAsync();
 
                         if (_isDebugEnabled)
                         {
-                            _logger.LogDebug("Table: {tableName}, Records: {recordCount}", loader.TableName,
-                                recordsLoaded);
+                            _logger.LogDebug("Table: {tableName}, Records: {recordCount}", importer.TableName,
+                                recordsImported);
                         }
                     }
                 }
@@ -134,22 +134,22 @@ public class FnddsImporter
                 {
                     await connection.OpenAsync();
 
-                    var loaders =
-                        new List<DataLoader>
+                    var importers =
+                        new List<DataImporter>
                         {
-                            new IngredEquivLoader(version, connection, _dbContext),
+                            new IngredEquivImporter(version, connection, _dbContext),
                         };
 
-                    foreach (var loader in loaders)
+                    foreach (var importer in importers)
                     {
-                        await loader.PrepareToLoadAsync();
+                        await importer.PrepareToImportAsync();
 
-                        var recordsLoaded = await loader.LoadAsync();
+                        var recordsImported = await importer.ImportAsync();
 
                         if (_isDebugEnabled)
                         {
-                            _logger.LogDebug("Table: {tableName}, Records: {recordCount}", loader.TableName,
-                                recordsLoaded);
+                            _logger.LogDebug("Table: {tableName}, Records: {recordCount}", importer.TableName,
+                                recordsImported);
                         }
                     }
                 }

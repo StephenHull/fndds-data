@@ -5,24 +5,23 @@ using FoodAndNutrientData.Importer.Entities;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 
-namespace FoodAndNutrientData.Importer.Loaders.Tables;
+namespace FoodAndNutrientData.Importer.Importers.Tables;
 
 /// <summary>
-/// This class contains functionaility for loading data for the subcode description
-/// table.
+/// This class contains functionaility for importing data for the food weights table.
 /// </summary>
-public class SubcodeDescLoader : DataLoader
+public class FoodWeightImporter : DataImporter
 {
     /// <summary>
     /// The table name in the source database.
     /// </summary>
-    private const string SourceTableName = "SubcodeDesc";
+    private const string SourceTableName = "FoodWeights";
 
     /// <summary>
     /// The logger class.
     /// </summary>
-    private static readonly ILogger<SubcodeDescLoader> _logger =
-        new NLogLoggerFactory().CreateLogger<SubcodeDescLoader>();
+    private static readonly ILogger<FoodWeightImporter> _logger =
+        new NLogLoggerFactory().CreateLogger<FoodWeightImporter>();
 
     /// <summary>
     /// True if the logger is debug endabled; otherwise, false.
@@ -30,12 +29,12 @@ public class SubcodeDescLoader : DataLoader
     private readonly bool _isDebugEnabled = false;
 
     /// <summary>
-    /// Constructs a new SubcodeDescLoader object.
+    /// Constructs a new FoodWeightsImporter object.
     /// </summary>
     /// <param name="version">The FNDDS version.</param>
     /// <param name="connection">The connection to the source database.</param>
     /// <param name="context">The destination database context.</param>
-    public SubcodeDescLoader(FnddsVersion version, OleDbConnection connection, FnddsDbContext context)
+    public FoodWeightImporter(FnddsVersion version, OleDbConnection connection, FnddsDbContext context)
         : base(version, connection, context)
     {
         _isDebugEnabled = _logger.IsEnabled(LogLevel.Debug);
@@ -44,6 +43,16 @@ public class SubcodeDescLoader : DataLoader
     /// <inheritdoc />
     public override IEnumerable<DataColumnModel> Columns =>
         [
+            new DataColumnModel
+            {
+                SourceName = "[Food code]",
+                DestinationName = "FoodCode",
+                IsOrderedBy = true,
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                ],
+            },
             new DataColumnModel
             {
                 SourceName = "[Subcode]",
@@ -56,11 +65,31 @@ public class SubcodeDescLoader : DataLoader
             },
             new DataColumnModel
             {
+                SourceName = "[Seq num]",
+                DestinationName = "SeqNum",
+                IsOrderedBy = true,
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                ],
+            },
+            new DataColumnModel
+            {
+                SourceName = "[Portion code]",
+                DestinationName = "PortionCode",
+                IsOrderedBy = true,
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                ],
+            },
+            new DataColumnModel
+            {
                 SourceName = "[Start date]",
                 DestinationName = "StartDt",
                 Versions =
                 [
-                    1, 2, 4, 8, 16, 32, 64, 128, 256,
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
                 ],
             },
             new DataColumnModel
@@ -69,16 +98,25 @@ public class SubcodeDescLoader : DataLoader
                 DestinationName = "EndDt",
                 Versions =
                 [
-                    1, 2, 4, 8, 16, 32, 64, 128, 256,
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
                 ],
             },
             new DataColumnModel
             {
-                SourceName = "[Subcode description]",
-                DestinationName = "SubcodeDescription",
+                SourceName = "[Portion weight]",
+                DestinationName = "PortionWeight",
                 Versions =
                 [
-                    1, 2, 4, 8, 16, 32, 64, 128, 256,
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                ],
+            },
+            new DataColumnModel
+            {
+                SourceName = "[Change type]",
+                DestinationName = "ChangeType",
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32,
                 ],
             },
         ];
@@ -91,13 +129,13 @@ public class SubcodeDescLoader : DataLoader
     {
         try
         {
-            var entities = new List<SubcodeDesc>();
+            var entities = new List<FoodWeight>();
 
             var recordCount = 0;
 
             while (reader.Read())
             {
-                var entity = new SubcodeDesc
+                var entity = new FoodWeight
                 {
                     VersionId = FnddsVersion.Id,
                     CreateDt = DateTime.UtcNow
@@ -109,12 +147,14 @@ public class SubcodeDescLoader : DataLoader
 
                 if (_isDebugEnabled)
                 {
-                    _logger.LogDebug("Table: {tableName}, Subcode: {subcode}", SourceTableName, entity.Subcode);
+                    _logger.LogDebug("Table: {tableName}, Food code: {foodCode}, Subcode: {subcode}, Sequence: " +
+                        "{sequence}, Portion code: {portionCode}", SourceTableName, entity.FoodCode, entity.Subcode,
+                        entity.SeqNum, entity.PortionCode);
                 }
 
                 if (entities.Count > BatchSize)
                 {
-                    Context.SubcodeDescs.AddRange(entities);
+                    Context.FoodWeights.AddRange(entities);
 
                     await Context.SaveChangesAsync();
 
@@ -126,7 +166,7 @@ public class SubcodeDescLoader : DataLoader
 
             if (entities.Count > 0)
             {
-                Context.SubcodeDescs.AddRange(entities);
+                Context.FoodWeights.AddRange(entities);
 
                 await Context.SaveChangesAsync();
             }
@@ -138,36 +178,6 @@ public class SubcodeDescLoader : DataLoader
             _logger.LogError(e, "Failed to create the records for table {tableName}.", TableName);
 
             throw;
-        }
-    }
-
-    public override async Task<bool> PrepareToLoadAsync()
-    {
-        try
-        {
-            var sql = FnddsVersion.Id switch
-            {
-                1 or 2 or 4 =>
-                    "UPDATE SubcodeDesc " +
-                    "SET [Subcode description] = 'Default Gram Weights' " +
-                    "WHERE (Subcode = 0)",
-                _ => string.Empty,
-            };
-
-            if (!string.IsNullOrWhiteSpace(sql))
-            {
-                using var command = new OleDbCommand(sql, Connection);
-
-                await command.ExecuteNonQueryAsync();
-            }
-
-            return true;
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "Failed to prepare to load the records for table {tableName}.", TableName);
-
-            return false;
         }
     }
 }

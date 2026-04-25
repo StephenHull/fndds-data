@@ -5,7 +5,7 @@ You can download the FNDDS data [here](https://www.ars.usda.gov/northeast-area/b
 
 ### Data fixes required to source files.
 
-A few source files have data that must be updated before the data can be loaded into the SQL Server database. Below is a list of each file and the data that must be updated.
+A few source files have data that must be updated before the data can be imported into the SQL Server database. Below is a list of each file and the data that must be updated.
 
 1\. FNDDS 2001 - 2002
 * For the SubcodeDesc table, update the [Subcode description] column to "Default Gram Weights" where Subcode equals zero (0).

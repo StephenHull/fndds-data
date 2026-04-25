@@ -5,24 +5,24 @@ using FoodAndNutrientData.Importer.Entities;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 
-namespace FoodAndNutrientData.Importer.Loaders.Tables;
+namespace FoodAndNutrientData.Importer.Importers.Tables;
 
 /// <summary>
-/// This class contains functionaility for loading data for the ingredient nutrient
-/// values table.
+/// This class contains functionaility for importing data for the main food description
+/// table.
 /// </summary>
-public class IngredNutValLoader : DataLoader
+public class MainFoodDescImporter : DataImporter
 {
     /// <summary>
     /// The table name in the source database.
     /// </summary>
-    private const string SourceTableName = "IngredNutVal";
+    private const string SourceTableName = "MainFoodDesc";
 
     /// <summary>
     /// The logger class.
     /// </summary>
-    private static readonly ILogger<IngredNutValLoader> _logger =
-        new NLogLoggerFactory().CreateLogger<IngredNutValLoader>();
+    private static readonly ILogger<MainFoodDescImporter> _logger =
+        new NLogLoggerFactory().CreateLogger<MainFoodDescImporter>();
 
     /// <summary>
     /// True if the logger is debug endabled; otherwise, false.
@@ -30,12 +30,12 @@ public class IngredNutValLoader : DataLoader
     private readonly bool _isDebugEnabled = false;
 
     /// <summary>
-    /// Constructs a new IngredNutValLoader object.
+    /// Constructs a new MainFoodDescImporter object.
     /// </summary>
     /// <param name="version">The FNDDS version.</param>
     /// <param name="connection">The connection to the source database.</param>
     /// <param name="context">The destination database context.</param>
-    public IngredNutValLoader(FnddsVersion version, OleDbConnection connection, FnddsDbContext context)
+    public MainFoodDescImporter(FnddsVersion version, OleDbConnection connection, FnddsDbContext context)
         : base(version, connection, context)
     {
         _isDebugEnabled = _logger.IsEnabled(LogLevel.Debug);
@@ -46,22 +46,12 @@ public class IngredNutValLoader : DataLoader
         [
             new DataColumnModel
             {
-                SourceName = "[Ingredient code]",
-                DestinationName = "IngredientCode",
+                SourceName = "[Food code]",
+                DestinationName = "FoodCode",
                 IsOrderedBy = true,
                 Versions =
                 [
-                    128, 256, 512, 1024,
-                ],
-            },
-            new DataColumnModel
-            {
-                SourceName = "[Nutrient code]",
-                DestinationName = "NutrientCode",
-                IsOrderedBy = true,
-                Versions =
-                [
-                    128, 256, 512, 1024,
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
                 ],
             },
             new DataColumnModel
@@ -70,7 +60,7 @@ public class IngredNutValLoader : DataLoader
                 DestinationName = "StartDt",
                 Versions =
                 [
-                    128, 256, 512, 1024,
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
                 ],
             },
             new DataColumnModel
@@ -79,13 +69,40 @@ public class IngredNutValLoader : DataLoader
                 DestinationName = "EndDt",
                 Versions =
                 [
-                    128, 256, 512, 1024,
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
                 ],
             },
             new DataColumnModel
             {
-                SourceName = "[SR description]",
-                DestinationName = "IngredientDescription",
+                SourceName = "[Main food description]",
+                DestinationName = "MainFoodDescription",
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                ],
+            },
+            new DataColumnModel
+            {
+                SourceName = "[Abbreviated description]",
+                DestinationName = "AbbreviatedMainFoodDescription",
+                Versions =
+                [
+                    1, 2, 4,
+                ],
+            },
+            new DataColumnModel
+            {
+                SourceName = "[Fortification identifier]",
+                DestinationName = "FortificationIdentifier",
+                Versions =
+                [
+                    32,
+                ],
+            },
+            new DataColumnModel
+            {
+                SourceName = "[Fortification identifier code]",
+                DestinationName = "FortificationIdentifier",
                 Versions =
                 [
                     128,
@@ -93,44 +110,8 @@ public class IngredNutValLoader : DataLoader
             },
             new DataColumnModel
             {
-                SourceName = "[Ingredient description]",
-                DestinationName = "IngredientDescription",
-                Versions =
-                [
-                    256, 512, 1024,
-                ],
-            },
-            new DataColumnModel
-            {
-                SourceName = "[Nutrient value]",
-                DestinationName = "NutrientValue",
-                Versions =
-                [
-                    128, 256, 512, 1024,
-                ],
-            },
-            new DataColumnModel
-            {
-                SourceName = "[Nutrient value source]",
-                DestinationName = "NutrientValueSource",
-                Versions =
-                [
-                    128, 256, 512, 1024,
-                ],
-            },
-            new DataColumnModel
-            {
-                SourceName = "[FDC ID]",
-                DestinationName = "FdcId",
-                Versions =
-                [
-                    256, 512, 1024,
-                ],
-            },
-            new DataColumnModel
-            {
-                SourceName = "[SR 28 derivation code]",
-                DestinationName = "DerivationCode",
+                SourceName = "[WWEIA Category code]",
+                DestinationName = "CategoryNumber",
                 Versions =
                 [
                     128,
@@ -138,8 +119,8 @@ public class IngredNutValLoader : DataLoader
             },
             new DataColumnModel
             {
-                SourceName = "[Derivation code]",
-                DestinationName = "DerivationCode",
+                SourceName = "[WWEIA Category number]",
+                DestinationName = "CategoryNumber",
                 Versions =
                 [
                     256, 512, 1024,
@@ -147,46 +128,30 @@ public class IngredNutValLoader : DataLoader
             },
             new DataColumnModel
             {
-                SourceName = "[SR 28 AddMod year]",
-                DestinationName = "SRAddModYear",
+                SourceName = "[WWEIA Category description]",
+                DestinationName = "CategoryDescription",
                 Versions =
                 [
-                    128,
-                ],
-            },
-            new DataColumnModel
-            {
-                SourceName = "[SR AddMod year]",
-                DestinationName = "SRAddModYear",
-                Versions =
-                [
-                    256, 512, 1024,
-                ],
-            },
-            new DataColumnModel
-            {
-                SourceName = "[Foundation year acquired]",
-                DestinationName = "FoundationYearAcquired",
-                Versions =
-                [
-                    256, 512, 1024,
+                    128, 256, 512, 1024,
                 ],
             },
         ];
 
+    /// <inheritdoc />
     public override string TableName => SourceTableName;
 
+    /// <inheritdoc />
     public override async Task<int> CreateRecordsAsync(IEnumerable<DataColumnModel> columns, OleDbDataReader reader)
     {
         try
         {
-            var entities = new List<IngredNutVal>();
+            var entities = new List<MainFoodDesc>();
 
             var recordCount = 0;
 
             while (reader.Read())
             {
-                var entity = new IngredNutVal
+                var entity = new MainFoodDesc
                 {
                     VersionId = FnddsVersion.Id,
                     CreateDt = DateTime.UtcNow
@@ -198,13 +163,12 @@ public class IngredNutValLoader : DataLoader
 
                 if (_isDebugEnabled)
                 {
-                    _logger.LogDebug("Table: {tableName}, Ingredient code: {ingredientCode}, Nutrient code: " +
-                        "{nutrientCode}", SourceTableName, entity.IngredientCode, entity.NutrientCode);
+                    _logger.LogDebug("Table: {tableName}, Food code: {foodCode}", SourceTableName, entity.FoodCode);
                 }
 
                 if (entities.Count > BatchSize)
                 {
-                    Context.IngredNutVals.AddRange(entities);
+                    Context.MainFoodDescs.AddRange(entities);
 
                     await Context.SaveChangesAsync();
 
@@ -216,7 +180,7 @@ public class IngredNutValLoader : DataLoader
 
             if (entities.Count > 0)
             {
-                Context.IngredNutVals.AddRange(entities);
+                Context.MainFoodDescs.AddRange(entities);
 
                 await Context.SaveChangesAsync();
             }

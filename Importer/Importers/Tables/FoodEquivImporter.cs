@@ -5,19 +5,19 @@ using FoodAndNutrientData.Importer.Entities;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 
-namespace FoodAndNutrientData.Importer.Loaders.Tables;
+namespace FoodAndNutrientData.Importer.Importers.Tables;
 
 /// <summary>
-/// This class contains functionaility for loading data for the ingredient equivalents 
+/// This class contains functionaility for importing data for the food equivalents 
 /// table.
 /// </summary>
-public class IngredEquivLoader : DataLoader
+public class FoodEquivImporter : DataImporter
 {
     /// <summary>
     /// The logger class.
     /// </summary>
-    private static readonly ILogger<IngredEquivLoader> _logger =
-        new NLogLoggerFactory().CreateLogger<IngredEquivLoader>();
+    private static readonly ILogger<FoodEquivImporter> _logger =
+        new NLogLoggerFactory().CreateLogger<FoodEquivImporter>();
 
     /// <summary>
     /// True if the logger is debug endabled; otherwise, false.
@@ -25,12 +25,12 @@ public class IngredEquivLoader : DataLoader
     private bool _isDebugEnabled = false;
 
     /// <summary>
-    /// Constructs a new IngredEquivLoader object.
+    /// Constructs a new FoodEquivImporter object.
     /// </summary>
     /// <param name="version">The FNDDS version.</param>
     /// <param name="connection">The connection to the source database.</param>
     /// <param name="context">The destination database context.</param>
-    public IngredEquivLoader(FnddsVersion version, OleDbConnection connection, FnddsDbContext context)
+    public FoodEquivImporter(FnddsVersion version, OleDbConnection connection, FnddsDbContext context)
         : base(version, connection, context)
     {
         _isDebugEnabled = _logger.IsEnabled(LogLevel.Debug);
@@ -41,8 +41,8 @@ public class IngredEquivLoader : DataLoader
         [
             new DataColumnModel
             {
-                SourceName = "CODE",
-                DestinationName = "IngredientCode",
+                SourceName = "FOODCODE",
+                DestinationName = "FoodCode",
                 IsOrderedBy = true,
                 Versions =
                 [
@@ -51,8 +51,19 @@ public class IngredEquivLoader : DataLoader
             },
             new DataColumnModel
             {
+                SourceName = "MODCODE",
+                DestinationName = "ModCode",
+                IsIgnored = true,
+                IsOrderedBy = true,
+                Versions =
+                [
+                    4, 8, 16, 32,
+                ],
+            },
+            new DataColumnModel
+            {
                 SourceName = "DESCRIPTION",
-                DestinationName = "IngredientDescription",
+                DestinationName = "FoodDescription",
                 IsOrderedBy = true,
                 Versions =
                 [
@@ -401,13 +412,13 @@ public class IngredEquivLoader : DataLoader
         {
             return FnddsVersion.Id switch
             {
-                4 => "FPID_0506",
-                8 => "FPID_0708",
-                16 => "FPID_0910",
-                32 => "FPID_1112",
-                64 => "FPID_1314",
-                128 => "FPID_1516",
-                256 => "FPID_1718",
+                4 => "FPED_0506",
+                8 => "FPED_0708",
+                16 => "FPED_0910",
+                32 => "FPED_1112",
+                64 => "FPED_1314",
+                128 => "FPED_1516",
+                256 => "FPED_1718",
                 _ => string.Empty,
             };
         }
@@ -418,13 +429,31 @@ public class IngredEquivLoader : DataLoader
     {
         try
         {
-            var entities = new List<IngredEquiv>();
+            var entities = new List<FoodEquiv>();
 
             var recordCount = 0;
 
             while (reader.Read())
             {
-                var equivalent = new IngredEquiv
+                // Versions 4, 8, 16, and 32 have Mod Codes for the Equivalents, but NO Mod Codes for the Main Food
+                // Descriptions.
+                if (FnddsVersion.Id == 4 || FnddsVersion.Id == 8 || FnddsVersion.Id == 16 || FnddsVersion.Id == 32)
+                {
+                    var value = reader.GetValue(1);
+                    if (int.TryParse(value.ToString(), out var modCode) == false)
+                    {
+                        var message = string.Format("Unable to parse mod code value {0}.", value);
+
+                        throw new Exception(message);
+                    }
+
+                    if (modCode > 0)
+                    {
+                        continue;
+                    }
+                }
+
+                var equivalent = new FoodEquiv
                 {
                     VersionId = FnddsVersion.Id,
                     CreateDt = DateTime.Now
@@ -436,12 +465,12 @@ public class IngredEquivLoader : DataLoader
 
                 if (_isDebugEnabled)
                 {
-                    _logger.LogDebug("Table: {0}, Ingredient code: {1}", TableName, equivalent.IngredientCode);
+                    _logger.LogDebug("Table: {0}, Food code: {1}", TableName, equivalent.FoodCode);
                 }
 
                 if (entities.Count > BatchSize)
                 {
-                    Context.IngredEquivs.AddRange(entities);
+                    Context.FoodEquivs.AddRange(entities);
 
                     await Context.SaveChangesAsync();
 
@@ -453,7 +482,7 @@ public class IngredEquivLoader : DataLoader
 
             if (entities.Count > 0)
             {
-                Context.IngredEquivs.AddRange(entities);
+                Context.FoodEquivs.AddRange(entities);
 
                 await Context.SaveChangesAsync();
             }

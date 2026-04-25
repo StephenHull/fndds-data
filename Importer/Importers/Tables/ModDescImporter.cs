@@ -5,37 +5,36 @@ using FoodAndNutrientData.Importer.Entities;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 
-namespace FoodAndNutrientData.Importer.Loaders.Tables;
+namespace FoodAndNutrientData.Importer.Importers.Tables;
 
 /// <summary>
-/// This class contains functionaility for loading data for the FNDDS nutrient
-/// values table.
+/// This class contains functionaility for importing data for the food modification
+/// description table.
 /// </summary>
-public class FnddsNutValLoader : DataLoader
+public class ModDescImporter : DataImporter
 {
     /// <summary>
     /// The table name in the source database.
     /// </summary>
-    private const string SourceTableName = "FnddsNutVal";
+    private const string SourceTableName = "ModDesc";
 
     /// <summary>
     /// The logger class.
     /// </summary>
-    private static readonly ILogger<FnddsNutValLoader> _logger =
-        new NLogLoggerFactory().CreateLogger<FnddsNutValLoader>();
+    private static readonly ILogger<ModDescImporter> _logger = new NLogLoggerFactory().CreateLogger<ModDescImporter>();
 
     /// <summary>
     /// True if the logger is debug endabled; otherwise, false.
     /// </summary>
-    private readonly bool _isDebugEnabled = false;
+    private bool _isDebugEnabled = false;
 
     /// <summary>
-    /// Constructs a new FnddsNutValLoader object.
+    /// Constructs a new ModDescImporter object.
     /// </summary>
     /// <param name="version">The FNDDS version.</param>
     /// <param name="connection">The connection to the source database.</param>
     /// <param name="context">The destination database context.</param>
-    public FnddsNutValLoader(FnddsVersion version, OleDbConnection connection, FnddsDbContext context)
+    public ModDescImporter(FnddsVersion version, OleDbConnection connection, FnddsDbContext context)
         : base(version, connection, context)
     {
         _isDebugEnabled = _logger.IsEnabled(LogLevel.Debug);
@@ -51,17 +50,17 @@ public class FnddsNutValLoader : DataLoader
                 IsOrderedBy = true,
                 Versions =
                 [
-                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                    16, 32,
                 ],
             },
             new DataColumnModel
             {
-                SourceName = "[Nutrient code]",
-                DestinationName = "NutrientCode",
+                SourceName = "[Modification code]",
+                DestinationName = "ModificationCode",
                 IsOrderedBy = true,
                 Versions =
                 [
-                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                    16, 32,
                 ],
             },
             new DataColumnModel
@@ -70,7 +69,7 @@ public class FnddsNutValLoader : DataLoader
                 DestinationName = "StartDt",
                 Versions =
                 [
-                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                    16, 32,
                 ],
             },
             new DataColumnModel
@@ -79,16 +78,16 @@ public class FnddsNutValLoader : DataLoader
                 DestinationName = "EndDt",
                 Versions =
                 [
-                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                    16, 32,
                 ],
             },
             new DataColumnModel
             {
-                SourceName = "[Nutrient value]",
-                DestinationName = "NutrientValue",
+                SourceName = "[Modification description]",
+                DestinationName = "ModificationDescription",
                 Versions =
                 [
-                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                    16, 32,
                 ],
             },
         ];
@@ -101,31 +100,31 @@ public class FnddsNutValLoader : DataLoader
     {
         try
         {
-            var entities = new List<FnddsNutVal>();
+            var entities = new List<ModDesc>();
 
             var recordCount = 0;
 
             while (reader.Read())
             {
-                var entity = new FnddsNutVal
+                var food = new ModDesc
                 {
                     VersionId = FnddsVersion.Id,
                     CreateDt = DateTime.UtcNow
                 };
 
-                SetModelValues(columns, reader, entity);
+                SetModelValues(columns, reader, food);
 
-                entities.Add(entity);
+                entities.Add(food);
 
                 if (_isDebugEnabled)
                 {
-                    _logger.LogDebug("Table: {tableName}, Food code: {foodCode}, Nutrient code: {nutrientCode}",
-                        SourceTableName, entity.FoodCode, entity.NutrientCode);
+                    _logger.LogDebug("Table: {tableName}, Food code: {foodCode}, Modification code: {modificationCode}",
+                        SourceTableName, food.FoodCode, food.ModificationCode);
                 }
 
                 if (entities.Count > BatchSize)
                 {
-                    Context.FnddsNutVals.AddRange(entities);
+                    Context.ModDescs.AddRange(entities);
 
                     await Context.SaveChangesAsync();
 
@@ -137,7 +136,7 @@ public class FnddsNutValLoader : DataLoader
 
             if (entities.Count > 0)
             {
-                Context.FnddsNutVals.AddRange(entities);
+                Context.ModDescs.AddRange(entities);
 
                 await Context.SaveChangesAsync();
             }

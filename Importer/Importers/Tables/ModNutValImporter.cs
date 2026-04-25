@@ -5,36 +5,37 @@ using FoodAndNutrientData.Importer.Entities;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 
-namespace FoodAndNutrientData.Importer.Loaders.Tables;
+namespace FoodAndNutrientData.Importer.Importers.Tables;
 
 /// <summary>
-/// This class contains functionaility for loading data for the derivation
-/// description table.
+/// This class contains functionaility for importing data for the food modification
+/// nutrient values table.
 /// </summary>
-public class DerivDescLoader : DataLoader
+public class ModNutValImporter : DataImporter
 {
     /// <summary>
     /// The table name in the source database.
     /// </summary>
-    private const string SourceTableName = "DerivDesc";
+    public static string SourceTableName = "ModNutVal";
 
     /// <summary>
     /// The logger class.
     /// </summary>
-    private static readonly ILogger<DerivDescLoader> _logger = new NLogLoggerFactory().CreateLogger<DerivDescLoader>();
+    private static readonly ILogger<ModNutValImporter> _logger =
+        new NLogLoggerFactory().CreateLogger<ModNutValImporter>();
 
     /// <summary>
     /// True if the logger is debug endabled; otherwise, false.
     /// </summary>
-    private readonly bool _isDebugEnabled = false;
+    private bool _isDebugEnabled = false;
 
     /// <summary>
-    /// Constructs a new DerivDescLoader object.
+    /// Constructs a new ModNutValImporter object.
     /// </summary>
     /// <param name="version">The FNDDS version.</param>
     /// <param name="connection">The connection to the source database.</param>
     /// <param name="context">The destination database context.</param>
-    public DerivDescLoader(FnddsVersion version, OleDbConnection connection, FnddsDbContext context)
+    public ModNutValImporter(FnddsVersion version, OleDbConnection connection, FnddsDbContext context)
         : base(version, connection, context)
     {
         _isDebugEnabled = _logger.IsEnabled(LogLevel.Debug);
@@ -45,40 +46,49 @@ public class DerivDescLoader : DataLoader
         [
             new DataColumnModel
             {
-                SourceName = "[SR 28 derivation code]",
-                DestinationName = "DerivationCode",
+                SourceName = "[Modification code]",
+                DestinationName = "ModificationCode",
                 IsOrderedBy = true,
                 Versions =
                 [
-                    128,
+                    16, 32,
                 ],
             },
             new DataColumnModel
             {
-                SourceName = "[Derivation code]",
-                DestinationName = "DerivationCode",
+                SourceName = "[Nutrient code]",
+                DestinationName = "NutrientCode",
                 IsOrderedBy = true,
                 Versions =
                 [
-                    256, 512, 1024,
+                    16, 32,
                 ],
             },
             new DataColumnModel
             {
-                SourceName = "[SR 28 derivation description]",
-                DestinationName = "DerivationDescription",
+                SourceName = "[Start date]",
+                DestinationName = "StartDt",
                 Versions =
                 [
-                    128,
+                    16, 32,
                 ],
             },
             new DataColumnModel
             {
-                SourceName = "[Derivation description]",
-                DestinationName = "DerivationDescription",
+                SourceName = "[End date]",
+                DestinationName = "EndDt",
                 Versions =
                 [
-                    256, 512, 1024,
+                    16, 32,
+                ],
+            },
+            new DataColumnModel
+            {
+                SourceName = "[Nutrient value]",
+                DestinationName = "NutrientValue",
+                Versions =
+                [
+                    16, 32,
                 ],
             },
         ];
@@ -91,43 +101,45 @@ public class DerivDescLoader : DataLoader
     {
         try
         {
-            var entities = new List<DerivDesc>();
+            var nutrients = new List<ModNutVal>();
 
             var recordCount = 0;
-
             while (reader.Read())
             {
-                var entity = new DerivDesc
+                var nutrient = new ModNutVal
                 {
                     VersionId = FnddsVersion.Id,
                     CreateDt = DateTime.UtcNow
                 };
 
-                SetModelValues(columns, reader, entity);
+                SetModelValues(columns, reader, nutrient);
 
-                entities.Add(entity);
+                nutrients.Add(nutrient);
 
                 if (_isDebugEnabled)
                 {
-                    _logger.LogDebug("Table: {tableName}, Derivation code: {derivationCode}", SourceTableName,
-                        entity.DerivationCode);
+                    _logger.LogDebug("Table: {0}, Modification code: {1}, Nutrient code: {2}",
+                        SourceTableName, nutrient.ModificationCode, nutrient.NutrientCode);
                 }
 
-                if (entities.Count > BatchSize)
+                if (nutrients.Count > BatchSize)
                 {
-                    Context.DerivDescs.AddRange(entities);
+                    Context.ModNutVals.AddRange(nutrients);
 
                     await Context.SaveChangesAsync();
 
-                    entities.Clear();
+                    nutrients.Clear();
                 }
 
                 recordCount++;
             }
 
-            Context.DerivDescs.AddRange(entities);
+            if (nutrients.Count > 0)
+            {
+                Context.ModNutVals.AddRange(nutrients);
 
-            await Context.SaveChangesAsync();
+                await Context.SaveChangesAsync();
+            }
 
             return recordCount;
         }
