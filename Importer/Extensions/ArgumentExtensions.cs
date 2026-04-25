@@ -9,13 +9,13 @@ public static partial class ArgumentExtensions
     [GeneratedRegex("Microsoft\\.ACE\\.OLEDB\\.16\\.0;Data Source=.+\\.mdb;Persist Security Info=False;")]
     private static partial Regex ConnectionStringRegex();
 
-    public static LoaderArguments GetArguments(this string[] args)
+    public static ImporterArguments GetArguments(this string[] args)
     {
         if (args.Length < 1)
         {
             Console.WriteLine("Error! No command-line arguments were specified.");
             Console.WriteLine("Required arguments:");
-            Console.WriteLine("    FnddsVersion: <int> - The version of FNDDS to load.");
+            Console.WriteLine("    FnddsVersion: <int> - The version of FNDDS to import.");
             Console.WriteLine("           1 = FNDDS 1.0 (2001-2002)");
             Console.WriteLine("           2 = FNDDS 2.0 (2003-2004)");
             Console.WriteLine("           4 = FNDDS 3.0 (2005-2006)");
@@ -29,7 +29,7 @@ public static partial class ArgumentExtensions
             Console.WriteLine("        1024 = FNDDS 2021-2023");
             Console.WriteLine("    ConnectionString: <string> - The Access database connection string.");
             Console.WriteLine("        Example: Provider=Microsoft.ACE.OLEDB.16.0;Data Source=c:/FNDDS.mdb;Persist Security Info=False;");
-            Console.WriteLine("Usage: FnddsData.Loader <FnddsVersion> <ConnectionString>");
+            Console.WriteLine("Usage: FnddsData.Importer <FnddsVersion> <ConnectionString>");
 
             throw new ArgumentException("No command-line arguments were specified.");
         }
@@ -55,7 +55,7 @@ public static partial class ArgumentExtensions
             throw new ArgumentException("The FNDDS Connection String was invalid.");
         }
 
-        var loaderArguments = new LoaderArguments
+        var importerArguments = new ImporterArguments
         {
             FnddsVersion = version,
             FnddsConnectionString = args[1]
@@ -77,7 +77,7 @@ public static partial class ArgumentExtensions
                 throw new ArgumentException("The FPED Connection String was invalid.");
             }
 
-            loaderArguments.FpedConnectionString = args[2];
+            importerArguments.FpedConnectionString = args[2];
 
             if (!ConnectionStringRegex().IsMatch(args[3]))
             {
@@ -86,9 +86,9 @@ public static partial class ArgumentExtensions
                 throw new ArgumentException("The FPID Connection String was invalid.");
             }
 
-            loaderArguments.FpidConnectionString = args[3];
+            importerArguments.FpidConnectionString = args[3];
         }
 
-        return loaderArguments;
+        return importerArguments;
     }
 }

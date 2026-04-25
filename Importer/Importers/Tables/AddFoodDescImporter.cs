@@ -5,19 +5,24 @@ using FoodAndNutrientData.Importer.Entities;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 
-namespace FoodAndNutrientData.Importer.Loaders.Tables;
+namespace FoodAndNutrientData.Importer.Importers.Tables;
 
 /// <summary>
-/// This class contains functionaility for loading data for the moisture and fat
-/// adjustment table.
+/// This class contains functionaility for importing data for the additional food
+/// description table.
 /// </summary>
-public class MoistNFatAdjustLoader : DataLoader
+public class AddFoodDescImporter : DataImporter
 {
+    /// <summary>
+    /// The table name in the source database.
+    /// </summary>
+    private const string SourceTableName = "AddFoodDesc";
+
     /// <summary>
     /// The logger class.
     /// </summary>
-    private static readonly ILogger<MoistNFatAdjustLoader> _logger =
-        new NLogLoggerFactory().CreateLogger<MoistNFatAdjustLoader>();
+    private static readonly ILogger<AddFoodDescImporter> _logger =
+        new NLogLoggerFactory().CreateLogger<AddFoodDescImporter>();
 
     /// <summary>
     /// True if the logger is debug endabled; otherwise, false.
@@ -25,12 +30,12 @@ public class MoistNFatAdjustLoader : DataLoader
     private readonly bool _isDebugEnabled = false;
 
     /// <summary>
-    /// Constructs a new MoistNFatAdjustLoader object.
+    /// Constructs a new AddFoodDescImporter object.
     /// </summary>
     /// <param name="version">The FNDDS version.</param>
     /// <param name="connection">The connection to the source database.</param>
     /// <param name="context">The destination database context.</param>
-    public MoistNFatAdjustLoader(FnddsVersion version, OleDbConnection connection, FnddsDbContext context)
+    public AddFoodDescImporter(FnddsVersion version, OleDbConnection connection, FnddsDbContext context)
         : base(version, connection, context)
     {
         _isDebugEnabled = _logger.IsEnabled(LogLevel.Debug);
@@ -43,6 +48,16 @@ public class MoistNFatAdjustLoader : DataLoader
             {
                 SourceName = "[Food code]",
                 DestinationName = "FoodCode",
+                IsOrderedBy = true,
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                ],
+            },
+            new DataColumnModel
+            {
+                SourceName = "[Seq num]",
+                DestinationName = "SeqNum",
                 IsOrderedBy = true,
                 Versions =
                 [
@@ -69,59 +84,30 @@ public class MoistNFatAdjustLoader : DataLoader
             },
             new DataColumnModel
             {
-                SourceName = "[Moisture change]",
-                DestinationName = "MoistureChange",
+                SourceName = "[Additional food description]",
+                DestinationName = "AdditionalFoodDescription",
                 Versions =
                 [
                     1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
                 ],
             },
-            new DataColumnModel
-            {
-                SourceName = "[Fat change]",
-                DestinationName = "FatChange",
-                Versions =
-                [
-                    1, 2, 4, 8, 16, 32, 64,
-                ],
-            },
-            new DataColumnModel
-            {
-                SourceName = "[Type of fat]",
-                DestinationName = "TypeOfFat",
-                Versions =
-                [
-                    1, 2, 4, 8, 16, 32, 64,
-                ],
-            },
         ];
 
     /// <inheritdoc />
-    public override string TableName
-    {
-        get
-        {
-            return FnddsVersion.Id switch
-            {
-                1 or 2 or 4 or 8 or 16 or 32 or 64 => "MoistNFatAdjust",
-                128 or 256 or 512 or 1024 => "MoistAdjust",
-                _ => string.Empty,
-            };
-        }
-    }
+    public override string TableName => SourceTableName;
 
     /// <inheritdoc />
     public override async Task<int> CreateRecordsAsync(IEnumerable<DataColumnModel> columns, OleDbDataReader reader)
     {
         try
         {
-            var entities = new List<MoistNFatAdjust>();
+            var entities = new List<AddFoodDesc>();
 
             var recordCount = 0;
 
             while (reader.Read())
             {
-                var entity = new MoistNFatAdjust
+                var entity = new AddFoodDesc
                 {
                     VersionId = FnddsVersion.Id,
                     CreateDt = DateTime.UtcNow
@@ -133,12 +119,13 @@ public class MoistNFatAdjustLoader : DataLoader
 
                 if (_isDebugEnabled)
                 {
-                    _logger.LogDebug("Table: {tableName}, Food code: {foodCode}", TableName, entity.FoodCode);
+                    _logger.LogDebug("Table: {tableName}, Food code: {foodCode}, Sequence: {sequenceNumber}",
+                        SourceTableName, entity.FoodCode, entity.SeqNum);
                 }
 
                 if (entities.Count > BatchSize)
                 {
-                    Context.MoistNFatAdjusts.AddRange(entities);
+                    Context.AddFoodDescs.AddRange(entities);
 
                     await Context.SaveChangesAsync();
 
@@ -150,7 +137,7 @@ public class MoistNFatAdjustLoader : DataLoader
 
             if (entities.Count > 0)
             {
-                Context.MoistNFatAdjusts.AddRange(entities);
+                Context.AddFoodDescs.AddRange(entities);
 
                 await Context.SaveChangesAsync();
             }

@@ -5,23 +5,24 @@ using FoodAndNutrientData.Importer.Entities;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 
-namespace FoodAndNutrientData.Importer.Loaders.Tables;
+namespace FoodAndNutrientData.Importer.Importers.Tables;
 
 /// <summary>
-/// This class contains functionaility for loading data for the nutrient
-/// description table.
+/// This class contains functionaility for importing data for the subcode description
+/// table.
 /// </summary>
-public class NutDescLoader : DataLoader
+public class SubcodeDescImporter : DataImporter
 {
     /// <summary>
     /// The table name in the source database.
     /// </summary>
-    private const string SourceTableName = "NutDesc";
+    private const string SourceTableName = "SubcodeDesc";
 
     /// <summary>
     /// The logger class.
     /// </summary>
-    private static readonly ILogger<NutDescLoader> _logger = new NLogLoggerFactory().CreateLogger<NutDescLoader>();
+    private static readonly ILogger<SubcodeDescImporter> _logger =
+        new NLogLoggerFactory().CreateLogger<SubcodeDescImporter>();
 
     /// <summary>
     /// True if the logger is debug endabled; otherwise, false.
@@ -29,12 +30,12 @@ public class NutDescLoader : DataLoader
     private readonly bool _isDebugEnabled = false;
 
     /// <summary>
-    /// Constructs a new NutDescLoader object.
+    /// Constructs a new SubcodeDescImporter object.
     /// </summary>
     /// <param name="version">The FNDDS version.</param>
     /// <param name="connection">The connection to the source database.</param>
     /// <param name="context">The destination database context.</param>
-    public NutDescLoader(FnddsVersion version, OleDbConnection connection, FnddsDbContext context)
+    public SubcodeDescImporter(FnddsVersion version, OleDbConnection connection, FnddsDbContext context)
         : base(version, connection, context)
     {
         _isDebugEnabled = _logger.IsEnabled(LogLevel.Debug);
@@ -45,48 +46,39 @@ public class NutDescLoader : DataLoader
         [
             new DataColumnModel
             {
-                SourceName = "[Nutrient code]",
-                DestinationName = "NutrientCode",
+                SourceName = "[Subcode]",
+                DestinationName = "Subcode",
                 IsOrderedBy = true,
                 Versions =
                 [
-                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                    1, 2, 4, 8, 16, 32, 64, 128, 256,
                 ],
             },
             new DataColumnModel
             {
-                SourceName = "[Nutrient description]",
-                DestinationName = "NutrientDescription",
+                SourceName = "[Start date]",
+                DestinationName = "StartDt",
                 Versions =
                 [
-                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                    1, 2, 4, 8, 16, 32, 64, 128, 256,
                 ],
             },
             new DataColumnModel
             {
-                SourceName = "Tagname",
-                DestinationName = "Tagname",
+                SourceName = "[End date]",
+                DestinationName = "EndDt",
                 Versions =
                 [
-                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                    1, 2, 4, 8, 16, 32, 64, 128, 256,
                 ],
             },
             new DataColumnModel
             {
-                SourceName = "Unit",
-                DestinationName = "Unit",
+                SourceName = "[Subcode description]",
+                DestinationName = "SubcodeDescription",
                 Versions =
                 [
-                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
-                ],
-            },
-            new DataColumnModel
-            {
-                SourceName = "Decimals",
-                DestinationName = "Decimals",
-                Versions =
-                [
-                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                    1, 2, 4, 8, 16, 32, 64, 128, 256,
                 ],
             },
         ];
@@ -99,13 +91,13 @@ public class NutDescLoader : DataLoader
     {
         try
         {
-            var entities = new List<NutDesc>();
+            var entities = new List<SubcodeDesc>();
 
             var recordCount = 0;
 
             while (reader.Read())
             {
-                var entity = new NutDesc
+                var entity = new SubcodeDesc
                 {
                     VersionId = FnddsVersion.Id,
                     CreateDt = DateTime.UtcNow
@@ -117,13 +109,12 @@ public class NutDescLoader : DataLoader
 
                 if (_isDebugEnabled)
                 {
-                    _logger.LogDebug("Table: {tableName}, Nutrient code: {nutrientCode}", SourceTableName,
-                        entity.NutrientCode);
+                    _logger.LogDebug("Table: {tableName}, Subcode: {subcode}", SourceTableName, entity.Subcode);
                 }
 
                 if (entities.Count > BatchSize)
                 {
-                    Context.NutDescs.AddRange(entities);
+                    Context.SubcodeDescs.AddRange(entities);
 
                     await Context.SaveChangesAsync();
 
@@ -133,9 +124,12 @@ public class NutDescLoader : DataLoader
                 recordCount++;
             }
 
-            Context.NutDescs.AddRange(entities);
+            if (entities.Count > 0)
+            {
+                Context.SubcodeDescs.AddRange(entities);
 
-            await Context.SaveChangesAsync();
+                await Context.SaveChangesAsync();
+            }
 
             return recordCount;
         }
@@ -144,6 +138,36 @@ public class NutDescLoader : DataLoader
             _logger.LogError(e, "Failed to create the records for table {tableName}.", TableName);
 
             throw;
+        }
+    }
+
+    public override async Task<bool> PrepareToImportAsync()
+    {
+        try
+        {
+            var sql = FnddsVersion.Id switch
+            {
+                1 or 2 or 4 =>
+                    "UPDATE SubcodeDesc " +
+                    "SET [Subcode description] = 'Default Gram Weights' " +
+                    "WHERE (Subcode = 0)",
+                _ => string.Empty,
+            };
+
+            if (!string.IsNullOrWhiteSpace(sql))
+            {
+                using var command = new OleDbCommand(sql, Connection);
+
+                await command.ExecuteNonQueryAsync();
+            }
+
+            return true;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Failed to prepare to import the records for table {tableName}.", TableName);
+
+            return false;
         }
     }
 }

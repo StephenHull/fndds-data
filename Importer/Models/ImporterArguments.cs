@@ -2,7 +2,7 @@ using FoodAndNutrientData.Importer.Entities;
 
 namespace FoodAndNutrientData.Importer.Models;
 
-public class LoaderArguments
+public class ImporterArguments
 {
     public FnddsVersion FnddsVersion { get; set; } = default!;
 

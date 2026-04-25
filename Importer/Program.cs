@@ -27,16 +27,16 @@ try
                     options.UseSqlServer(connectionString);
                 });
 
-                services.AddScoped<FnddsImporter>();
+                services.AddScoped<Importer>();
             });
 
     using var host = builder.Build();
 
     using var scope = host.Services.CreateScope();
 
-    var fnddsLoader = scope.ServiceProvider.GetRequiredService<FnddsImporter>();
+    var importer = scope.ServiceProvider.GetRequiredService<Importer>();
 
-    await fnddsLoader.ImportDataAsync(arguments.FnddsVersion, arguments.FnddsConnectionString,
+    await importer.ImportDataAsync(arguments.FnddsVersion, arguments.FnddsConnectionString,
         arguments.FpedConnectionString, arguments.FpidConnectionString);
 
     Console.WriteLine("Successfully imported the data.");

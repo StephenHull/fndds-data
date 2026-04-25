@@ -4,17 +4,17 @@ using FoodAndNutrientData.Base.Services;
 using FoodAndNutrientData.Importer.Contexts;
 using FoodAndNutrientData.Importer.Entities;
 
-namespace FoodAndNutrientData.Importer.Loaders;
+namespace FoodAndNutrientData.Importer.Importers;
 
-public abstract class DataLoader : DataLoaderBase
+public abstract class DataImporter : DataImporterBase
 {
     /// <summary>
-    /// Constructs a new DataLoader object.
+    /// Constructs a new DataImporter object.
     /// </summary>
     /// <param name="version">The FNDDS version.</param>
     /// <param name="connection">The connection to the source database.</param>
     /// <param name="context">The destination database context.</param>
-    protected DataLoader(FnddsVersion version, OleDbConnection connection, FnddsDbContext context)
+    protected DataImporter(FnddsVersion version, OleDbConnection connection, FnddsDbContext context)
     {
         FnddsVersion = version;
         Connection = connection;

@@ -5,18 +5,19 @@ using FoodAndNutrientData.Importer.Entities;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 
-namespace FoodAndNutrientData.Importer.Loaders.Tables;
+namespace FoodAndNutrientData.Importer.Importers.Tables;
 
 /// <summary>
-/// This class contains functionaility for loading data for the FNDDS ingredient table.
+/// This class contains functionaility for importing data for the FNDDS ingredient 
+/// table.
 /// </summary>
-public class FnddsIngredLoader : DataLoader
+public class FnddsIngredImporter : DataImporter
 {
     /// <summary>
     /// The logger class.
     /// </summary>
-    private static readonly ILogger<FnddsIngredLoader> _logger =
-        new NLogLoggerFactory().CreateLogger<FnddsIngredLoader>();
+    private static readonly ILogger<FnddsIngredImporter> _logger =
+        new NLogLoggerFactory().CreateLogger<FnddsIngredImporter>();
 
     /// <summary>
     /// True if the logger is debug endabled; otherwise, false.
@@ -24,12 +25,12 @@ public class FnddsIngredLoader : DataLoader
     private readonly bool _isDebugEnabled = false;
 
     /// <summary>
-    /// Constructs a new FnddsIngredLoader object.
+    /// Constructs a new FnddsIngredImporter object.
     /// </summary>
     /// <param name="version">The FNDDS version.</param>
     /// <param name="connection">The connection to the source database.</param>
     /// <param name="context">The destination database context.</param>
-    public FnddsIngredLoader(FnddsVersion version, OleDbConnection connection, FnddsDbContext context)
+    public FnddsIngredImporter(FnddsVersion version, OleDbConnection connection, FnddsDbContext context)
         : base(version, connection, context)
     {
         _isDebugEnabled = _logger.IsEnabled(LogLevel.Debug);

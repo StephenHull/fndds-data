@@ -5,37 +5,32 @@ using FoodAndNutrientData.Importer.Entities;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 
-namespace FoodAndNutrientData.Importer.Loaders.Tables;
+namespace FoodAndNutrientData.Importer.Importers.Tables;
 
 /// <summary>
-/// This class contains functionaility for loading data for the food modification
-/// description table.
+/// This class contains functionaility for importing data for the moisture and fat
+/// adjustment table.
 /// </summary>
-public class ModDescLoader : DataLoader
+public class MoistNFatAdjustImporter : DataImporter
 {
-    /// <summary>
-    /// The table name in the source database.
-    /// </summary>
-    private const string SourceTableName = "ModDesc";
-
     /// <summary>
     /// The logger class.
     /// </summary>
-    private static readonly ILogger<ModDescLoader> _logger =
-        new NLogLoggerFactory().CreateLogger<ModDescLoader>();
+    private static readonly ILogger<MoistNFatAdjustImporter> _logger =
+        new NLogLoggerFactory().CreateLogger<MoistNFatAdjustImporter>();
 
     /// <summary>
     /// True if the logger is debug endabled; otherwise, false.
     /// </summary>
-    private bool _isDebugEnabled = false;
+    private readonly bool _isDebugEnabled = false;
 
     /// <summary>
-    /// Constructs a new ModDescLoader object.
+    /// Constructs a new MoistNFatAdjustImporter object.
     /// </summary>
     /// <param name="version">The FNDDS version.</param>
     /// <param name="connection">The connection to the source database.</param>
     /// <param name="context">The destination database context.</param>
-    public ModDescLoader(FnddsVersion version, OleDbConnection connection, FnddsDbContext context)
+    public MoistNFatAdjustImporter(FnddsVersion version, OleDbConnection connection, FnddsDbContext context)
         : base(version, connection, context)
     {
         _isDebugEnabled = _logger.IsEnabled(LogLevel.Debug);
@@ -51,17 +46,7 @@ public class ModDescLoader : DataLoader
                 IsOrderedBy = true,
                 Versions =
                 [
-                    16, 32,
-                ],
-            },
-            new DataColumnModel
-            {
-                SourceName = "[Modification code]",
-                DestinationName = "ModificationCode",
-                IsOrderedBy = true,
-                Versions =
-                [
-                    16, 32,
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
                 ],
             },
             new DataColumnModel
@@ -70,7 +55,7 @@ public class ModDescLoader : DataLoader
                 DestinationName = "StartDt",
                 Versions =
                 [
-                    16, 32,
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
                 ],
             },
             new DataColumnModel
@@ -79,53 +64,81 @@ public class ModDescLoader : DataLoader
                 DestinationName = "EndDt",
                 Versions =
                 [
-                    16, 32,
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
                 ],
             },
             new DataColumnModel
             {
-                SourceName = "[Modification description]",
-                DestinationName = "ModificationDescription",
+                SourceName = "[Moisture change]",
+                DestinationName = "MoistureChange",
                 Versions =
                 [
-                    16, 32,
+                    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                ],
+            },
+            new DataColumnModel
+            {
+                SourceName = "[Fat change]",
+                DestinationName = "FatChange",
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64,
+                ],
+            },
+            new DataColumnModel
+            {
+                SourceName = "[Type of fat]",
+                DestinationName = "TypeOfFat",
+                Versions =
+                [
+                    1, 2, 4, 8, 16, 32, 64,
                 ],
             },
         ];
 
     /// <inheritdoc />
-    public override string TableName => SourceTableName;
+    public override string TableName
+    {
+        get
+        {
+            return FnddsVersion.Id switch
+            {
+                1 or 2 or 4 or 8 or 16 or 32 or 64 => "MoistNFatAdjust",
+                128 or 256 or 512 or 1024 => "MoistAdjust",
+                _ => string.Empty,
+            };
+        }
+    }
 
     /// <inheritdoc />
     public override async Task<int> CreateRecordsAsync(IEnumerable<DataColumnModel> columns, OleDbDataReader reader)
     {
         try
         {
-            var entities = new List<ModDesc>();
+            var entities = new List<MoistNFatAdjust>();
 
             var recordCount = 0;
 
             while (reader.Read())
             {
-                var food = new ModDesc
+                var entity = new MoistNFatAdjust
                 {
                     VersionId = FnddsVersion.Id,
                     CreateDt = DateTime.UtcNow
                 };
 
-                SetModelValues(columns, reader, food);
+                SetModelValues(columns, reader, entity);
 
-                entities.Add(food);
+                entities.Add(entity);
 
                 if (_isDebugEnabled)
                 {
-                    _logger.LogDebug("Table: {tableName}, Food code: {foodCode}, Modification code: {modificationCode}",
-                        SourceTableName, food.FoodCode, food.ModificationCode);
+                    _logger.LogDebug("Table: {tableName}, Food code: {foodCode}", TableName, entity.FoodCode);
                 }
 
                 if (entities.Count > BatchSize)
                 {
-                    Context.ModDescs.AddRange(entities);
+                    Context.MoistNFatAdjusts.AddRange(entities);
 
                     await Context.SaveChangesAsync();
 
@@ -137,7 +150,7 @@ public class ModDescLoader : DataLoader
 
             if (entities.Count > 0)
             {
-                Context.ModDescs.AddRange(entities);
+                Context.MoistNFatAdjusts.AddRange(entities);
 
                 await Context.SaveChangesAsync();
             }
